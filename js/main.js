@@ -77,7 +77,7 @@ function makePandemi(){
     type:'bar',
     data:{labels:yrs,datasets:[{
       data:yrs.map(y=>annual[y]),
-      backgroundColor:'#ffff',
+      backgroundColor:'#FFC72C',
       borderRadius:5,borderWidth:0
     }]},
     options:{
@@ -91,7 +91,7 @@ function makePandemi(){
         x:{ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:11}},grid:{color:'rgba(255,255,255,.05)'}},
         y:{
           suggestedMax:20000000,
-          ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+'M'},
+          ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+' jt'},
           grid:{color:'rgba(255,255,255,.05)'}
         }
       }
@@ -634,3 +634,45 @@ function initDynamicPintu() {
 }
 
 makeIO('#pintu', initDynamicPintu, 0.1);
+/* ═══════════════════════════════
+   CHART GENERASI WISATAWAN (Donut)
+═══════════════════════════════ */
+function makeGenerasi() {
+  const el = document.getElementById('cGenerasi');
+  if (!el) return;
+
+  new Chart(el, {
+    type: 'doughnut',
+    data: {
+      labels: ['Post Gen Z', 'Gen Z', 'Milenial', 'Gen X', 'Baby Boomer & Pre-Boomer'],
+      datasets: [{
+        data: [6.99, 16.92, 32.27, 24.96, 18.87],
+        backgroundColor: ['#93c5fd', '#60a5fa', '#1e3a5f', '#92400e', '#d97706'],
+        borderColor: 'rgba(13,158,143,.4)',
+        borderWidth: 3,
+        hoverOffset: 14
+      }]
+    },
+    options: {
+      cutout: '62%',
+      responsive: true,
+      animation: { animateRotate: true, animateScale: false, duration: 1300, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(5,12,10,.95)',
+          titleColor: '#f0ede6',
+          bodyColor: '#e8c96a',
+          borderColor: 'rgba(255,255,255,.1)',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: ctx => '  ' + ctx.label + ': ' + ctx.parsed + '%'
+          }
+        }
+      }
+    }
+  });
+}
+
+makeIO('#generasi', makeGenerasi, 0.15);

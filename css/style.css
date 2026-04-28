@@ -561,3 +561,21 @@ body{font-family:'Lato',sans-serif;background:#f5f5f0;color:#1a1a1a;overflow-x:h
   letter-spacing: .1em;
   margin-top: .15rem;
 }
+/* ═══════════════════════════════
+   GENERASI WISATAWAN PANEL
+═══════════════════════════════ */
+.gen-legend{display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem;}
+.gen-leg-item{display:flex;align-items:flex-start;gap:.75rem;}
+.gen-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.gen-leg-name{font-family:var(--fh);font-size:.95rem;font-weight:600;color:#fff;display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;}
+.gen-leg-pct{color:var(--yellow);font-size:.85rem;font-weight:700;}
+.gen-leg-desc{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:2px;}
+
+/* Donut center label */
+.donut-center-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.dcl-val{font-family:var(--fh);font-size:1.3rem;font-weight:700;color:#fff;line-height:1;}
+.dcl-sub{font-size:.7rem;color:rgba(255,255,255,.5);margin-top:5px;letter-spacing:.05em;text-transform:uppercase;}
+
+@media(max-width:1000px){
+  .donut-center-label .dcl-val{font-size:1rem;}
+}
