@@ -554,11 +554,11 @@ function initDynamicPintu() {
     });
   }
 
-  // ── SCROLL-JACKING: panel diam, chart berganti seiring scroll ──
-  // pintu-scroll-wrapper punya height 300vh.
-  // Saat scroll wrapper di atas: hitung progress 0–1 dalam 3 panel.
-  // Panel 0→1/3 = air, 1/3→2/3 = sea, 2/3→1 = land.
-  // Tambah progress dots di sisi kanan panel.
+  // ── SCROLL-JACKING: panel diam, chart berganti step-by-step ──
+  // Pendekatan: target idx dihitung dari scroll position,
+  // tapi eksekusi SELALU step-by-step (tidak boleh skip).
+  // Kalau scroll cepat loncat dari idx 0 ke 2, queue akan
+  // render idx 1 dulu (dengan delay singkat) sebelum idx 2.
   const wrapper = document.getElementById('pintu');
 
   // Buat progress dots
@@ -572,9 +572,13 @@ function initDynamicPintu() {
   const stickyEl = document.getElementById('pintu-sticky');
   if (stickyEl) stickyEl.appendChild(dotsEl);
 
-  // Klik dot juga bisa switch
+  // Klik dot
   dotsEl.querySelectorAll('.pintu-dot').forEach(dot => {
-    dot.addEventListener('click', () => renderChart(dot.dataset.key));
+    dot.addEventListener('click', () => {
+      const k = dot.dataset.key;
+      const newIdx = PANEL_KEYS.indexOf(k);
+      if (newIdx >= 0) stepTo(newIdx);
+    });
   });
 
   function updateDots(key) {
@@ -583,42 +587,49 @@ function initDynamicPintu() {
     });
   }
 
-  // Override renderChart untuk juga update dots
-  const _origRender = renderChart;
   function renderChartWithDots(key, initial) {
-    _origRender(key, initial);
+    renderChart(key, initial);
     updateDots(key);
   }
 
-  // Pertama kali masuk: render 'air' tanpa exit (setelah renderChartWithDots didefinisikan)
+  // Pertama kali masuk
   renderChartWithDots('air', true);
   animCardNumbers();
 
-  // Sequence of panels
   const PANEL_KEYS = ['air', 'sea', 'land'];
-  let lastPanelIdx = 0;
+  let displayedIdx = 0;   // idx yang sedang tampil
+  let targetIdx    = 0;   // idx yang dituju scroll
+  let stepping     = false;
+
+  // Step satu-per-satu dari displayedIdx menuju targetIdx
+  function stepToNext() {
+    if (displayedIdx === targetIdx) { stepping = false; return; }
+    stepping = true;
+    const direction = targetIdx > displayedIdx ? 1 : -1;
+    displayedIdx += direction;
+    renderChartWithDots(PANEL_KEYS[displayedIdx]);
+    // Tunggu animasi selesai (~700ms) baru cek lagi
+    setTimeout(stepToNext, 720);
+  }
+
+  function stepTo(newIdx) {
+    targetIdx = newIdx;
+    if (!stepping) stepToNext();
+  }
 
   function onPintuScroll() {
     if (!wrapper) return;
-    const rect = wrapper.getBoundingClientRect();
-    const wrapH = wrapper.offsetHeight; // 300vh
-    // scrolled = berapa banyak wrapper yang sudah lewat atas viewport
+    const rect  = wrapper.getBoundingClientRect();
+    const wrapH = wrapper.offsetHeight;
     const scrolled = -rect.top;
     if (scrolled < 0 || scrolled > wrapH - window.innerHeight) return;
 
-    // progress 0..1 dalam ruang scroll (0=awal masuk, 1=ujung wrapper)
     const progress = scrolled / (wrapH - window.innerHeight);
-    // Bagi jadi 3 panel: 0–0.33, 0.33–0.66, 0.66–1
     const idx = Math.min(Math.floor(progress * 3), 2);
-
-    if (idx !== lastPanelIdx) {
-      lastPanelIdx = idx;
-      renderChartWithDots(PANEL_KEYS[idx]);
-    }
+    if (idx !== targetIdx) stepTo(idx);
   }
 
   window.addEventListener('scroll', onPintuScroll, { passive: true });
-  // Panggil sekali saat init untuk sinkronisasi
   onPintuScroll();
 }
 
