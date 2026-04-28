@@ -63,7 +63,7 @@ function makeTren(){
         x:{ticks:{color:'#9a9890',font:{family:'Oswald',size:11}},grid:{color:'rgba(0,0,0,.04)'}},
         y:{
           suggestedMax:16000000,
-          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+'M'},
+          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+' jt'},
           grid:{color:'rgba(0,0,0,.05)'}
         }
       }
@@ -119,7 +119,7 @@ function makeRecovery(){
         x:{ticks:{color:'#9a9890',font:{family:'Oswald',size:11}},grid:{color:'rgba(0,0,0,.04)'}},
         y:{
           suggestedMax:1700000,
-          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(1)+'M'},
+          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(1)+' jt'},
           grid:{color:'rgba(0,0,0,.05)'}
         }
       }
@@ -146,7 +146,7 @@ function makeNasional(){
       scales:{
         x:{
           suggestedMax:3000000,
-          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(1)+'M'},
+          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(1)+' jt'},
           grid:{color:'rgba(0,0,0,.04)'}
         },
         y:{ticks:{color:'#1c1f1e',font:{family:'Oswald',size:11}},grid:{display:false}}
@@ -179,7 +179,7 @@ function makeMega(){
         x:{ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:11}},grid:{color:'rgba(255,255,255,.05)'}},
         y:{
           suggestedMax:20000000,
-          ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+'M'},
+          ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+' jt'},
           grid:{color:'rgba(255,255,255,.05)'}
         }
       }
@@ -224,7 +224,7 @@ function makeMonthly(yr){
         x:{ticks:{color:'#9a9890',font:{family:'Oswald',size:11}},grid:{color:'rgba(0,0,0,.04)'}},
         y:{
           suggestedMax:1700000,
-          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(1)+'M'},
+          ticks:{color:'#9a9890',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(1)+' jt'},
           grid:{color:'rgba(0,0,0,.05)'}
         }
       }
