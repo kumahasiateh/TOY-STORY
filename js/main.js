@@ -77,7 +77,7 @@ function makePandemi(){
     type:'bar',
     data:{labels:yrs,datasets:[{
       data:yrs.map(y=>annual[y]),
-      backgroundColor:['#2dc653','#e8a830','#d94f3d','#ff6b35'],
+      backgroundColor:'#00B894',
       borderRadius:5,borderWidth:0
     }]},
     options:{
@@ -132,7 +132,7 @@ function makeNasional(){
     type:'bar',
     data:{labels:nat2025.map(d=>d.name),datasets:[{
       data:nat2025.map(d=>d.val),
-      backgroundColor:['#0d9e8f','#e8a830','#3a7bd5','#d94f3d','#ff6b35','#9b5de5','#2dc653','#f15bb5','#00b4d8','#ffd60a'],
+      backgroundColor:'#00B894',
       borderRadius:5,borderWidth:0
     }]},
     options:{
@@ -161,9 +161,9 @@ function makeMega(){
     type:'bar',
     data:{labels:yrs,datasets:[{
       data:yrs.map(y=>annual[y]),
-      backgroundColor:yrs.map(y => y <= 2019 ? '#e8a830' : y <= 2021 ? '#d94f3d' : '#0d9e8f'),
+      backgroundColor:'#00B894',
       borderRadius:6,borderWidth:0,
-      hoverBackgroundColor:yrs.map(y => y <= 2019 ? '#f5c800' : y <= 2021 ? '#ff4040' : '#0fc9b8')
+      hoverBackgroundColor:'#00D4A8'
     }]},
     options:{
       responsive:true,
@@ -242,7 +242,7 @@ function makeTPK(){
     type:'bar',
     data:{labels:s.map(d=>d.p),datasets:[{
       data:s.map(d=>d.v),
-      backgroundColor:s.map((d,i) => d.p==='Bali' ? '#d94f3d' : d.p==='Indonesia' ? '#e8a830' : ['#0d9e8f','#3a7bd5','#ff6b35','#9b5de5','#2dc653','#f15bb5','#00b4d8','#ffd60a'][i] || '#0d9e8f'),
+      backgroundColor:'#00B894',
       borderRadius:5,borderWidth:0
     }]},
     options:{
@@ -420,8 +420,8 @@ function initDynamicPintu() {
     });
   }
 
-  // Palet warna solid kontras — satu warna per bar, tidak ada gradasi
-  const COLORS = ['#0d9e8f','#e8a830','#d94f3d','#3a7bd5','#9b5de5','#f15bb5','#2dc653','#ff6b35','#00b4d8'];
+  // Satu warna kontras untuk semua bar — tidak ada gradasi
+  const BAR_COLOR = '#00B894';
 
   const pintuData = {
     air: {
@@ -466,9 +466,9 @@ function initDynamicPintu() {
     }
   };
 
-  // Inject warna kontras ke tiap item
+  // Inject warna solid ke tiap item
   Object.values(pintuData).forEach(mode => {
-    mode.list.forEach((item, i) => { item.color = COLORS[i % COLORS.length]; });
+    mode.list.forEach((item, i) => { item.color = BAR_COLOR; });
   });
 
   let currentKey = null;
@@ -542,10 +542,6 @@ function initDynamicPintu() {
     }
   }
 
-  // Pertama kali masuk: render 'air' tanpa exit
-  renderChart('air', true);
-  animCardNumbers();
-
   // Klik tab
   const tabsEl = document.getElementById('pintu-tabs');
   if (tabsEl) {
@@ -557,6 +553,84 @@ function initDynamicPintu() {
       });
     });
   }
+
+  // ── SCROLL-JACKING: panel diam, chart berganti step-by-step ──
+  // Pendekatan: target idx dihitung dari scroll position,
+  // tapi eksekusi SELALU step-by-step (tidak boleh skip).
+  // Kalau scroll cepat loncat dari idx 0 ke 2, queue akan
+  // render idx 1 dulu (dengan delay singkat) sebelum idx 2.
+  const wrapper = document.getElementById('pintu');
+
+  // Buat progress dots
+  const dotsEl = document.createElement('div');
+  dotsEl.className = 'pintu-progress';
+  dotsEl.innerHTML = [
+    '<div class="pintu-dot active" data-key="air"  title="Udara"></div>',
+    '<div class="pintu-dot"       data-key="sea"   title="Laut"></div>',
+    '<div class="pintu-dot"       data-key="land"  title="Darat"></div>'
+  ].join('');
+  const stickyEl = document.getElementById('pintu-sticky');
+  if (stickyEl) stickyEl.appendChild(dotsEl);
+
+  // Klik dot
+  dotsEl.querySelectorAll('.pintu-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const k = dot.dataset.key;
+      const newIdx = PANEL_KEYS.indexOf(k);
+      if (newIdx >= 0) stepTo(newIdx);
+    });
+  });
+
+  function updateDots(key) {
+    dotsEl.querySelectorAll('.pintu-dot').forEach(d => {
+      d.classList.toggle('active', d.dataset.key === key);
+    });
+  }
+
+  function renderChartWithDots(key, initial) {
+    renderChart(key, initial);
+    updateDots(key);
+  }
+
+  // Pertama kali masuk
+  renderChartWithDots('air', true);
+  animCardNumbers();
+
+  const PANEL_KEYS = ['air', 'sea', 'land'];
+  let displayedIdx = 0;   // idx yang sedang tampil
+  let targetIdx    = 0;   // idx yang dituju scroll
+  let stepping     = false;
+
+  // Step satu-per-satu dari displayedIdx menuju targetIdx
+  function stepToNext() {
+    if (displayedIdx === targetIdx) { stepping = false; return; }
+    stepping = true;
+    const direction = targetIdx > displayedIdx ? 1 : -1;
+    displayedIdx += direction;
+    renderChartWithDots(PANEL_KEYS[displayedIdx]);
+    // Tunggu animasi selesai (~700ms) baru cek lagi
+    setTimeout(stepToNext, 720);
+  }
+
+  function stepTo(newIdx) {
+    targetIdx = newIdx;
+    if (!stepping) stepToNext();
+  }
+
+  function onPintuScroll() {
+    if (!wrapper) return;
+    const rect  = wrapper.getBoundingClientRect();
+    const wrapH = wrapper.offsetHeight;
+    const scrolled = -rect.top;
+    if (scrolled < 0 || scrolled > wrapH - window.innerHeight) return;
+
+    const progress = scrolled / (wrapH - window.innerHeight);
+    const idx = Math.min(Math.floor(progress * 3), 2);
+    if (idx !== targetIdx) stepTo(idx);
+  }
+
+  window.addEventListener('scroll', onPintuScroll, { passive: true });
+  onPintuScroll();
 }
 
 makeIO('#pintu', initDynamicPintu, 0.1);

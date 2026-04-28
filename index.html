@@ -189,30 +189,35 @@
 
 <svg class="wdiv" style="background:var(--off)" viewBox="0 0 1440 55"><path d="M0,55 C400,0 1040,55 1440,20 L1440,55 Z" fill="var(--ink)"/></svg>
 
-<section class="sec sec-off" id="pintu">
-  <div class="con">
-    <div class="sec-eye rv"><span class="eye-num">06</span><div class="eye-bar"></div></div>
-    <h2 class="sec-title rv">Jumlah Kunjungan<br/>Berdasarkan <span class="t">Pintu Masuk</span></h2>
-    <p class="sec-sub rv">Bandara · Pelabuhan · Darat — 2025</p>
+<section id="pintu" class="pintu-scroll-wrapper">
+  <!-- Sticky panel yang nempel saat scroll -->
+  <div class="pintu-sticky" id="pintu-sticky">
+    <div class="con">
+      <div class="sec-eye rv"><span class="eye-num">06</span><div class="eye-bar"></div></div>
+      <h2 class="sec-title rv">Jumlah Kunjungan<br/>Berdasarkan <span class="t">Pintu Masuk</span></h2>
+      <p class="sec-sub rv">Bandara · Pelabuhan · Darat — 2025</p>
 
-    <div class="pintu-tabs rv" id="pintu-tabs">
-      <div class="pintu-tab active-air" id="ptab-air">✈️ Udara</div>
-      <div class="pintu-tab" id="ptab-sea">🚢 Laut</div>
-      <div class="pintu-tab" id="ptab-land">🛣️ Darat</div>
-    </div>
+      <div class="pintu-tabs rv" id="pintu-tabs">
+        <div class="pintu-tab active-air" id="ptab-air">✈️ Udara</div>
+        <div class="pintu-tab" id="ptab-sea">🚢 Laut</div>
+        <div class="pintu-tab" id="ptab-land">🛣️ Darat</div>
+      </div>
 
-    <div class="gw-cards">
-      <div class="gwc air rv"><div class="gwc-icon">✈️</div><div class="gwc-lbl">Pintu Udara</div><div class="gwc-val" data-target="10819291">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">70,9%</div></div>
-      <div class="gwc sea rv" style="transition-delay:.1s"><div class="gwc-icon">🚢</div><div class="gwc-lbl">Pintu Laut</div><div class="gwc-val" data-target="3028847">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">19,8%</div></div>
-      <div class="gwc land rv" style="transition-delay:.2s"><div class="gwc-icon">🛣️</div><div class="gwc-lbl">Pintu Darat</div><div class="gwc-val" data-target="1538508">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">10,1%</div></div>
-    </div>
+      <div class="gw-cards">
+        <div class="gwc air rv"><div class="gwc-icon">✈️</div><div class="gwc-lbl">Pintu Udara</div><div class="gwc-val" data-target="10819291">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">70,9%</div></div>
+        <div class="gwc sea rv" style="transition-delay:.1s"><div class="gwc-icon">🚢</div><div class="gwc-lbl">Pintu Laut</div><div class="gwc-val" data-target="3028847">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">19,8%</div></div>
+        <div class="gwc land rv" style="transition-delay:.2s"><div class="gwc-icon">🛣️</div><div class="gwc-lbl">Pintu Darat</div><div class="gwc-val" data-target="1538508">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">10,1%</div></div>
+      </div>
 
-    <div class="abox rv" id="pintu-abox">
-      <div class="abox-title" id="pintu-chart-label"></div>
-      <div class="ab-rows" id="pintu-chart-stream"></div>
-      <div class="pintu-chart-note" id="pintu-chart-note"></div>
+      <div class="abox rv" id="pintu-abox">
+        <div class="abox-title" id="pintu-chart-label"></div>
+        <div class="ab-rows" id="pintu-chart-stream"></div>
+        <div class="pintu-chart-note" id="pintu-chart-note"></div>
+      </div>
     </div>
   </div>
+  <!-- Spacer scroll: 3 panel × 100vh -->
+  <div class="pintu-scroll-space"></div>
 </section>
 
 <svg class="wdiv" style="background:#fff" viewBox="0 0 1440 55"><path d="M0,0 C400,55 1040,0 1440,35 L1440,0 Z" fill="var(--off)"/></svg>
