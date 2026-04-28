@@ -31,6 +31,7 @@
     <li><a href="#generasi">Generasi</a></li>
     <li><a href="#pengeluaran">Pengeluaran</a></li>
     <li><a href="#hotel">Hotel</a></li>
+    <li><a href="#aboutus">Tentang Kami</a></li>
   </ul>
   <div class="nav-prog" id="navBar"></div>
 </nav>
@@ -652,6 +653,111 @@
     <p class="outro-src rv">Sumber Data: Badan Pusat Statistik (BPS) Indonesia<br/>Kunjungan Wisman per Kebangsaan &amp; Pintu Masuk 2017–2025 · TPK Hotel Berbintang per Provinsi 2000–2024</p>
   </div>
 </div>
+
+<!-- ══════════════════════════════
+    SECTION 09 — TIM PENGEMBANG -->
+
+<section class="sec sec-gradient" id="aboutus">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">09</span><div class="eye-bar" style="background:var(--yellow)"></div></div>
+    <h2 class="sec-title rv">Tim <span class="y">Pengembang</span></h2>
+    <p class="sec-sub rv">Siapa yang Membuat Webstory Ini?</p>
+    
+    <div class="dev-grid">
+      <div class="dev-card rv">
+        <div class="dev-card-inner">
+          <div class="dev-glow"></div>
+          <div class="dev-photo" onclick="showDevModal('Dena')">
+            <img src="" alt="Foto Dena" class="dev-img">
+            <div class="dev-photo-overlay"></div>
+          </div>
+          <button class="dev-upload-btn" onclick="uploadPhotoFromCard(event, this, 'Dena')">📷 Upload Foto</button>
+          <div class="dev-name">Dena</div>
+          <div class="dev-role">Project Leader</div>
+          <div class="dev-social">
+            <span>💼</span>
+          </div>
+        </div>
+      </div>
+      <div class="dev-card rv" style="transition-delay:.1s">
+        <div class="dev-card-inner">
+          <div class="dev-glow"></div>
+          <div class="dev-photo" onclick="showDevModal('Nuzul')">
+            <img src="" alt="Foto Nuzul" class="dev-img">
+            <div class="dev-photo-overlay"></div>
+          </div>
+          <button class="dev-upload-btn" onclick="uploadPhotoFromCard(event, this, 'Nuzul')">📷 Upload Foto</button>
+          <div class="dev-name">Nuzul</div>
+          <div class="dev-role">Lead Developer</div>
+          <div class="dev-social">
+            <span>💻</span>
+          </div>
+        </div>
+      </div>
+      <div class="dev-card rv" style="transition-delay:.2s">
+        <div class="dev-card-inner">
+          <div class="dev-glow"></div>
+          <div class="dev-photo" onclick="showDevModal('Syaira')">
+            <img src="" alt="Foto Syaira" class="dev-img">
+            <div class="dev-photo-overlay"></div>
+          </div>
+          <button class="dev-upload-btn" onclick="uploadPhotoFromCard(event, this, 'Syaira')">📷 Upload Foto</button>
+          <div class="dev-name">Syaira</div>
+          <div class="dev-role">UI/UX Designer</div>
+          <div class="dev-social">
+            <span>🎨</span>
+          </div>
+        </div>
+      </div>
+      <div class="dev-card rv" style="transition-delay:.3s">
+        <div class="dev-card-inner">
+          <div class="dev-glow"></div>
+          <div class="dev-photo" onclick="showDevModal('Azka')">
+            <img src="" alt="Foto Azka" class="dev-img">
+            <div class="dev-photo-overlay"></div>
+          </div>
+          <button class="dev-upload-btn" onclick="uploadPhotoFromCard(event, this, 'Azka')">📷 Upload Foto</button>
+          <div class="dev-name">Azka</div>
+          <div class="dev-role">Data Analyst</div>
+          <div class="dev-social">
+            <span>📊</span>
+          </div>
+        </div>
+      </div>
+      <div class="dev-card rv" style="transition-delay:.4s">
+        <div class="dev-card-inner">
+          <div class="dev-glow"></div>
+          <div class="dev-photo" onclick="showDevModal('Zaid')">
+            <img src="" alt="Foto Zaid" class="dev-img">
+            <div class="dev-photo-overlay"></div>
+          </div>
+          <button class="dev-upload-btn" onclick="uploadPhotoFromCard(event, this, 'Zaid')">📷 Upload Foto</button>
+          </div>
+          <!-- Modal for developer detail -->
+          <div id="devModal" class="dev-modal" style="display:none">
+            <div class="dev-modal-content">
+              <button class="dev-modal-close" onclick="closeDevModal()">&times;</button>
+              <img id="devModalPhoto" class="dev-modal-photo" src="" alt="Foto Developer">
+              <h2 id="devModalName"></h2>
+              <div id="devModalRole" style="color:var(--yellow);font-weight:600;margin-bottom:1rem"></div>
+              <div id="devModalDesc" style="color:#1a1a1a;font-size:1rem;line-height:1.6"></div>
+            </div>
+          </div>
+          <div class="dev-name">Zaid</div>
+          <div class="dev-role">Content Writer</div>
+          <div class="dev-social">
+            <span>✍️</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="dev-info rv">
+      <p class="body" style="color:rgba(255,255,255,.7)">Klik pada area foto untuk mengupload foto diri Anda. Foto akan disimpan di browser lokal.</p>
+    </div>
+  </div>
+</section>
+
 <div class="footer">
   <div class="f-brand">🏄 Pariwisata <em>Indonesia</em></div>
   <div class="f-copy">Data: BPS Indonesia · Webstory Visualisasi Data</div>
