@@ -991,3 +991,97 @@ makeIO('#pengeluaran', () => {
   makePengTren();
   makePengTop3();
 }, 0.1);
+
+/* ═══════════════════════════════
+   ABOUT US — PHOTO UPLOAD
+═══════════════════════════════ */
+
+function uploadPhotoFromCard(e, btn, name) {
+  e.stopPropagation();
+  const card = btn.closest('.dev-card');
+  const photoEl = card.querySelector('.dev-photo');
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(ev) {
+    const file = ev.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = photoEl.querySelector('.dev-img');
+      img.src = event.target.result;
+      photoEl.classList.add('has-photo');
+      localStorage.setItem('dev_photo_' + name, event.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+
+// Load foto dari localStorage saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+  const devCards = document.querySelectorAll('.dev-card');
+  devCards.forEach(card => {
+    const name = card.querySelector('.dev-name').textContent;
+    const savedPhoto = localStorage.getItem('dev_photo_' + name);
+    if (savedPhoto) {
+      const photoContainer = card.querySelector('.dev-photo');
+      const img = photoContainer.querySelector('.dev-img');
+      img.src = savedPhoto;
+      photoContainer.classList.add('has-photo');
+    }
+  });
+});
+
+// Developer detail data
+const devDetails = {
+  'Dena': {
+    role: 'Project Leader',
+    desc: 'Koordinator utama, pengarah visi, dan pengambil keputusan utama dalam pengembangan webstory ini. Mengatur timeline, membagi tugas, dan memastikan semua berjalan lancar.'
+  },
+  'Nuzul': {
+    role: 'Lead Developer',
+    desc: 'Penanggung jawab utama pengembangan kode, integrasi data, dan implementasi fitur interaktif. Mengelola struktur kode dan memastikan performa optimal.'
+  },
+  'Syaira': {
+    role: 'UI/UX Designer',
+    desc: 'Merancang tampilan dan pengalaman pengguna yang menarik, konsisten, dan mudah digunakan. Fokus pada estetika dan kenyamanan navigasi.'
+  },
+  'Azka': {
+    role: 'Data Analyst',
+    desc: 'Menganalisis data pariwisata, menyiapkan visualisasi, dan memastikan keakuratan informasi yang disajikan pada webstory.'
+  },
+  'Zaid': {
+    role: 'Content Writer',
+    desc: 'Menyusun narasi, insight, dan penjelasan data agar mudah dipahami dan menarik bagi pengunjung.'
+  }
+};
+
+function showDevModal(name) {
+  const modal = document.getElementById('devModal');
+  const photo = document.getElementById('devModalPhoto');
+  const nm = document.getElementById('devModalName');
+  const role = document.getElementById('devModalRole');
+  const desc = document.getElementById('devModalDesc');
+  nm.textContent = name;
+  role.textContent = devDetails[name].role;
+  desc.textContent = devDetails[name].desc;
+  // Load photo from localStorage if available
+  const savedPhoto = localStorage.getItem('dev_photo_' + name);
+  if (savedPhoto) {
+    photo.src = savedPhoto;
+  } else {
+    photo.src = '';
+    photo.style.background = 'var(--teal-l)';
+  }
+  modal.style.display = 'flex';
+}
+function closeDevModal() {
+  document.getElementById('devModal').style.display = 'none';
+}
+// Close modal on outside click
+window.addEventListener('click', function(e) {
+  const modal = document.getElementById('devModal');
+  if (modal && e.target === modal) closeDevModal();
+});
