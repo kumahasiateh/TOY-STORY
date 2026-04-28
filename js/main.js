@@ -646,11 +646,11 @@ function makeGenerasi() {
   if (!canvas) return;
 
   const GEN_DATA = [
-    { label: 'Post Gen Z',              pct: 6.99,  color: '#93c5fd', total: '971.339',   desc: 'Lahir \u22652013 \u00b7 \u226411 tahun' },
-    { label: 'Gen Z',                   pct: 16.92, color: '#60a5fa', total: '2.349.626', desc: 'Lahir 1997\u20132012 \u00b7 12\u201327 tahun' },
+    { label: 'Post Gen Z',              pct: 6.99,  color: '#ffffff', total: '971.339',   desc: 'Lahir \u22652013 \u00b7 \u226411 tahun' },
+    { label: 'Gen Z',                   pct: 16.92, color: '#fde68a', total: '2.349.626', desc: 'Lahir 1997\u20132012 \u00b7 12\u201327 tahun' },
     { label: 'Milenial',                pct: 32.27, color: '#e8a830', total: '4.481.927', desc: 'Lahir 1981\u20131996 \u00b7 28\u201343 tahun' },
-    { label: 'Gen X',                   pct: 24.96, color: '#fb923c', total: '3.466.614', desc: 'Lahir 1965\u20131980 \u00b7 44\u201359 tahun' },
-    { label: 'Baby Boomer & Pre-Boomer',pct: 18.87, color: '#a78bfa', total: '2.620.532', desc: 'Lahir \u22641964 \u00b7 \u226560 tahun' },
+    { label: 'Gen X',                   pct: 24.96, color: '#f97316', total: '3.466.614', desc: 'Lahir 1965\u20131980 \u00b7 44\u201359 tahun' },
+    { label: 'Baby Boomer & Pre-Boomer',pct: 18.87, color: '#c084fc', total: '2.620.532', desc: 'Lahir \u22641964 \u00b7 \u226560 tahun' },
   ];
 
   const centerPct   = document.getElementById('genCenterPct');
@@ -819,8 +819,11 @@ function drawPengLines(activeIdx = null) {
   const fRect = figure.getBoundingClientRect();
 
   // Figure center (relative to wrap)
-  const fx = fRect.left - wRect.left + fRect.width / 2;
-  const fy = fRect.top  - wRect.top  + fRect.height / 2;
+const FIGURE_OFFSET_X = 20; // coba 15–30
+const FIGURE_OFFSET_Y = 0;  // biasanya tidak perlu diubah
+
+const fx = fRect.left - wRect.left + fRect.width *0.2;
+const fy = fRect.top  - wRect.top  + fRect.height / 2;
 
   PENG_DATA.forEach((d, i) => {
     const card = document.getElementById(d.id);
