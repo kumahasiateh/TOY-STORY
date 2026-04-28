@@ -1037,24 +1037,29 @@ document.addEventListener('DOMContentLoaded', function() {
 // Developer detail data
 const devDetails = {
   'Dena': {
-    role: 'Project Leader',
-    desc: 'Koordinator utama, pengarah visi, dan pengambil keputusan utama dalam pengembangan webstory ini. Mengatur timeline, membagi tugas, dan memastikan semua berjalan lancar.'
+    role: 'Immanita Denawinta Ginting',
+    nim: '222313138',
+    desc: 'Mahasiswa D-IV Komputasi Statistik Politeknik Statistika STIS yang tertarik pada pengembangan teknologi berbasis data, mulai dari data processing, analisis statistik, hingga pembuatan aplikasi interaktif dan visualisasi data.'
   },
   'Nuzul': {
-    role: 'Lead Developer',
-    desc: 'Penanggung jawab utama pengembangan kode, integrasi data, dan implementasi fitur interaktif. Mengelola struktur kode dan memastikan performa optimal.'
+    role: 'Nuzul Athaillah',
+    nim: '222313305',
+    desc: 'Mahasiswa D-IV Komputasi Statistik Politeknik Statistika STIS yang tertarik pada pengembangan teknologi berbasis data, mulai dari data processing, analisis statistik, hingga pembuatan aplikasi interaktif dan visualisasi data.'
   },
   'Syaira': {
-    role: 'UI/UX Designer',
-    desc: 'Merancang tampilan dan pengalaman pengguna yang menarik, konsisten, dan mudah digunakan. Fokus pada estetika dan kenyamanan navigasi.'
+    role: 'Syaira Hasya Desiani',
+    nim: '222313393',
+    desc: 'Mahasiswa D-IV Komputasi Statistik Politeknik Statistika STIS yang tertarik pada pengembangan teknologi berbasis data, mulai dari data processing, analisis statistik, hingga pembuatan aplikasi interaktif dan visualisasi data.'
   },
   'Azka': {
-    role: 'Data Analyst',
-    desc: 'Menganalisis data pariwisata, menyiapkan visualisasi, dan memastikan keakuratan informasi yang disajikan pada webstory.'
+    role: 'Rizkyana Azka',
+    nim: '222313354',
+    desc: 'Mahasiswa D-IV Komputasi Statistik Politeknik Statistika STIS yang tertarik pada pengembangan teknologi berbasis data, mulai dari data processing, analisis statistik, hingga pembuatan aplikasi interaktif dan visualisasi data.'
   },
   'Zaid': {
-    role: 'Content Writer',
-    desc: 'Menyusun narasi, insight, dan penjelasan data agar mudah dipahami dan menarik bagi pengunjung.'
+    role: 'Zaid Rizky Ziadi',
+    nim: '222313442',
+    desc: 'Mahasiswa D-IV Komputasi Statistik Politeknik Statistika STIS yang tertarik pada pengembangan teknologi berbasis data, mulai dari data processing, analisis statistik, hingga pembuatan aplikasi interaktif dan visualisasi data.'
   }
 };
 
@@ -1064,8 +1069,8 @@ function showDevModal(name) {
   const nm = document.getElementById('devModalName');
   const role = document.getElementById('devModalRole');
   const desc = document.getElementById('devModalDesc');
-  nm.textContent = name;
-  role.textContent = devDetails[name].role;
+  nm.textContent = devDetails[name].role;
+  role.textContent = devDetails[name].nim;
   desc.textContent = devDetails[name].desc;
   // Load photo from localStorage if available
   const savedPhoto = localStorage.getItem('dev_photo_' + name);
