@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Pariwisata Indonesia — Webstory BPS 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Lato:ital,wght@0,400;0,700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+  
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <a class="nav-brand" href="#top">🏄 Pariwisata <em>Indonesia</em></a>
+  <ul class="nav-links">
+    <li><a href="#tren">Tren</a></li>
+    <li><a href="#pandemi">Pandemi</a></li>
+    <li><a href="#kebangsaan">Kebangsaan</a></li>
+    <li><a href="#peta">Peta Dunia</a></li>
+    <li><a href="#pintu">Pintu Masuk</a></li>
+    <li><a href="#pola">Pola Bulanan</a></li>
+    <li><a href="#hotel">Hotel</a></li>
+  </ul>
+  <div class="nav-prog" id="navBar"></div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="hero-video-wrap" id="heroVideoWrap">
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="videos/background.mp4" type="video/mp4"/>
+      <source src="videos/hero.webm" type="video/webm"/>
+    </video>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Badan Pusat Statistik · Data Resmi 2025</div>
+    <h1 class="hero-title">
+      Wisatawan<br/>
+      <span class="stroke">Manca</span><br/>
+      <span class="yellow">Negara</span>
+    </h1>
+    <p class="hero-sub">Indonesia dalam Angka — 2017 hingga 2025</p>
+    <a class="hero-cta" href="#tren">
+      Mulai Eksplorasi
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-lbl">Total Kunjungan 2025</div><div class="kpi-val y">15,39 Juta</div><div class="kpi-sub">wisatawan mancanegara</div></div>
+    <div class="kpi"><div class="kpi-lbl">Pertumbuhan 2025</div><div class="kpi-val">+10,8%</div><div class="kpi-sub">vs tahun sebelumnya</div></div>
+    <div class="kpi"><div class="kpi-lbl">Top Destinasi</div><div class="kpi-val" style="font-size:1.3rem">Bali </div><div class="kpi-sub">TPK 62,36% · 2025</div></div>
+    <div class="kpi"><div class="kpi-lbl">Wisatawan #1</div><div class="kpi-val y" style="font-size:1.3rem">Malaysia</div><div class="kpi-sub">2,64 Juta · 2025</div></div>
+  </div>
+  <div class="hero-scroll">
+    Scroll
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C360,80 1080,0 1440,50 L1440,80 L0,80 Z" fill="#f5f5f0"/>
+    </svg>
+  </div>
+</section>
+
+<section class="sec sec-off" id="tren">
+  <div class="con">
+    <div class="two">
+      <div>
+        <div class="sec-eye rv"><span class="eye-num">01</span><div class="eye-bar"></div></div>
+        <h2 class="sec-title rv">Tren <span class="t">Kunjungan</span><br/>Per Tahun</h2>
+        <p class="sec-sub rv">Kebangkitan Pasca Pandemi 2021–2025</p>
+        <p class="body rv">Setelah terhantam pandemi yang menekan kunjungan ke titik terendah <strong>1,56 juta</strong> di 2021, pariwisata Indonesia pulih dengan luar biasa. Di 2025, angka kunjungan menyentuh <strong>15,39 juta</strong> — pertumbuhan <strong>+10,8%</strong> dari tahun sebelumnya.</p>
+        <p class="body rv">Tren 5 tahun terakhir memperlihatkan lintasan menanjak dengan akselerasi yang semakin kuat setiap tahun.</p>
+        <div class="badge-row rv">
+          <div class="badge"><span class="bi">📈</span><div><div class="bv">+987,89%</div><div class="bd">2021 → 2025</div></div></div>
+          <div class="badge"><span class="bi">🎯</span><div><div class="bv">95,53%</div><div class="bd">Recovery vs 2019</div></div></div>
+        </div>
+      </div>
+      <div class="rv-r"><div class="cbox"><div class="clbl">Kunjungan Tahunan 2021–2025 (Juta)</div><canvas id="cTren" height="280"></canvas></div></div>
+    </div>
+  </div>
+</section>
+
+<svg class="wdiv" style="background:var(--teal)" viewBox="0 0 1440 55"><path d="M0,55 C400,0 1040,55 1440,20 L1440,55 Z" fill="var(--off)"/></svg>
+
+<section class="sec sec-teal" id="pandemi">
+  <div class="con">
+    <div class="two flip">
+      <div class="rv-l"><div class="cbox" style="background:rgba(255,255,255,.1);border-top-color:var(--yellow);backdrop-filter:blur(8px)"><div class="clbl" style="color:rgba(255,255,255,.45)">Dampak Pandemi 2019–2022</div><canvas id="cPandemi" height="270"></canvas></div></div>
+      <div>
+        <div class="sec-eye rv"><span class="eye-num">02</span><div class="eye-bar"></div></div>
+        <h2 class="sec-title rv">Badai yang<br/><span class="y">Mengubah Segalanya</span></h2>
+        <p class="sec-sub rv">Covid-19 · 2020–2021</p>
+        <p class="body rv">Maret 2020 — dunia berhenti. Pandemi menghantam pariwisata Indonesia lebih dalam dari yang pernah terjadi. Dari puncak <strong>16,1 juta</strong> di 2019, anjlok ke <strong>4,05 juta</strong> di 2020, lalu ambruk ke <strong>1,56 juta</strong> di 2021.</p>
+        <div class="crash rv">
+          <div class="cr-row"><div class="cr-y">2019</div><div class="cr-track"><div class="cr-fill" data-w="100" style="background:var(--yellow)"></div></div><div class="cr-v">16,1 Juta</div></div>
+          <div class="cr-row"><div class="cr-y">2020</div><div class="cr-track"><div class="cr-fill" data-w="25" style="background:var(--yellow)"></div></div><div class="cr-v">4,05 Juta</div></div>
+          <div class="cr-row"><div class="cr-y">2021</div><div class="cr-track"><div class="cr-fill" data-w="9.7" style="background:var(--yellow)"></div></div><div class="cr-v">1,56 Juta</div></div>
+          <div class="cr-row"><div class="cr-y">2022</div><div class="cr-track"><div class="cr-fill" data-w="36.5" style="background:var(--yellow)"></div></div><div class="cr-v">5,89 Juta</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wdiv" style="background:#fff" viewBox="0 0 1440 55"><path d="M0,0 C400,55 1040,0 1440,35 L1440,0 Z" fill="var(--teal)"/></svg>
+
+<section class="sec sec-off" id="kebangsaan">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">03</span><div class="eye-bar"></div></div>
+    <h2 class="sec-title rv">Dari Mana Mereka <span class="t">Datang?</span></h2>
+    <p class="sec-sub rv">Jumlah Kunjungan Berdasarkan Kebangsaan 2025</p>
+    <div class="nat-layout">
+      <div>
+        <p class="body rv"><strong>Malaysia</strong> memimpin dengan 2,64 juta kunjungan. <strong>Australia</strong> naik ke 1,75 juta. <strong>Tiongkok</strong> tumbuh +12,2% menjadi 1,34 juta, sementara <strong>Timor Leste</strong> mengejutkan dengan 1,01 juta kunjungan.</p>
+        <p class="body rv">Kawasan ASEAN mendominasi dengan total <strong>6,36 juta kunjungan</strong> — 45,5% dari seluruh kunjungan 2025.</p>
+        <div class="insight-box rv">
+          <div class="ins-title">💡 Insight Kebangsaan</div>
+          <div class="ins-text">Korea Selatan (+13,9% vs 2024), Tiongkok (+12,2%), dan Malaysia (+16,3%) mencatat pertumbuhan paling pesat di 2025. India (+3,4%) dan Australia (+5,0%) juga konsisten tumbuh.</div>
+        </div>
+      </div>
+      <div class="rv-r"><div class="cbox"><div class="clbl">Top 10 Kebangsaan 2025 (Juta)</div><canvas id="cNasional" height="340"></canvas></div></div>
+    </div>
+  </div>
+</section>
+
+<svg class="wdiv" style="background:#fff" viewBox="0 0 1440 55"><path d="M0,55 C400,0 1040,55 1440,20 L1440,55 Z" fill="var(--off)"/></svg>
+
+<section class="sec sec-white" id="peta">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">04</span><div class="eye-bar"></div></div>
+    <h2 class="sec-title rv">Sebaran Wisatawan<br/><span class="t">Global</span></h2>
+    <p class="sec-sub rv">Intensitas Kunjungan Berdasarkan Negara Asal (Tahun 2025)</p>
+    <p class="body rv">Peta interaktif berbentuk globe di bawah ini memvisualisasikan data pengunjung secara proporsional dari 150+ negara yang tercatat oleh BPS. Semakin gelap hijau warna suatu negara, semakin tinggi angka kunjungannya ke Indonesia. <em>(Sentuh/geser globe untuk memutar, hover negara untuk melihat angka)</em></p>
+    
+    <div class="globe-wrapper rv" style="margin-top:2rem;">
+      <div id="globe_div" style="width: 100%; height: 520px;"></div>
+    </div>
+    <div class="globe-stat-pills rv">
+      <div class="globe-stat-pill"><div class="gsp-val">150+</div><div class="gsp-lbl">Negara Asal</div></div>
+      <div class="globe-stat-pill" style="border-left-color:var(--yellow)"><div class="gsp-val" style="color:var(--yellow-d)">Malaysia</div><div class="gsp-lbl">Terbesar #1</div></div>
+      <div class="globe-stat-pill"><div class="gsp-val">15,39 Jt</div><div class="gsp-lbl">Total 2025</div></div>
+      <div class="globe-stat-pill" style="border-left-color:#6366f1"><div class="gsp-val" style="color:#6366f1">ASEAN 45,5%</div><div class="gsp-lbl">Share Regional</div></div>
+    </div>
+    <div class="globe-legend rv">
+      <div class="globe-legend-item">
+        <div class="globe-legend-swatch" style="background:#e5e7eb"></div>
+        <span>Data tidak tersedia</span>
+      </div>
+      <div class="globe-legend-item">
+        <div class="globe-legend-swatch" style="background:linear-gradient(to right,#d1fae5,#065f46)"></div>
+        <span>Rendah → Tinggi kunjungan</span>
+      </div>
+      <div class="globe-legend-item">
+        <div class="globe-legend-swatch" style="background:var(--yellow)"></div>
+        <span>Hover = angka kunjungan</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wdiv" style="background:var(--ink)" viewBox="0 0 1440 55"><path d="M0,0 C400,55 1040,0 1440,35 L1440,0 Z" fill="#fff"/></svg>
+
+<section class="sec sec-dark" id="timeline">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">05</span><div class="eye-bar" style="background:var(--teal)"></div></div>
+    <h2 class="sec-title rv">9 Tahun dalam<br/><span style="color:var(--teal)">Satu Pandangan</span></h2>
+    <p class="sec-sub rv">Data Lengkap 2017–2025</p>
+    <p class="dark-hint rv">Hover / tap pada bar untuk melihat detail per tahun</p>
+    <div class="dark-cbox rv"><canvas id="cMega" height="310"></canvas></div>
+    <div class="clegend rv">
+      <div class="cl"><div class="cl-dot" style="background:#f59e0b"></div>Era Normal</div>
+      <div class="cl"><div class="cl-dot" style="background:#ef4444"></div>Pandemi</div>
+      <div class="cl"><div class="cl-dot" style="background:#00bfad"></div>Pemulihan</div>
+    </div>
+  </div>
+</section>
+
+<svg class="wdiv" style="background:var(--off)" viewBox="0 0 1440 55"><path d="M0,55 C400,0 1040,55 1440,20 L1440,55 Z" fill="var(--ink)"/></svg>
+
+<section class="sec sec-off" id="pintu">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">06</span><div class="eye-bar"></div></div>
+    <h2 class="sec-title rv">Jumlah Kunjungan<br/>Berdasarkan <span class="t">Pintu Masuk</span></h2>
+    <p class="sec-sub rv">Bandara · Pelabuhan · Darat — 2025</p>
+
+    <div class="pintu-tabs rv" id="pintu-tabs">
+      <div class="pintu-tab active-air" id="ptab-air">✈️ Udara</div>
+      <div class="pintu-tab" id="ptab-sea">🚢 Laut</div>
+      <div class="pintu-tab" id="ptab-land">🛣️ Darat</div>
+    </div>
+
+    <div class="gw-cards">
+      <div class="gwc air rv"><div class="gwc-icon">✈️</div><div class="gwc-lbl">Pintu Udara</div><div class="gwc-val" data-target="10819291">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">70,9%</div></div>
+      <div class="gwc sea rv" style="transition-delay:.1s"><div class="gwc-icon">🚢</div><div class="gwc-lbl">Pintu Laut</div><div class="gwc-val" data-target="3028847">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">19,8%</div></div>
+      <div class="gwc land rv" style="transition-delay:.2s"><div class="gwc-icon">🛣️</div><div class="gwc-lbl">Pintu Darat</div><div class="gwc-val" data-target="1538508">0</div><div class="gwc-sub">kunjungan · 2025</div><div class="gwc-pct">10,1%</div></div>
+    </div>
+
+    <div class="abox rv" id="pintu-abox">
+      <div class="abox-title" id="pintu-chart-label"></div>
+      <div class="ab-rows" id="pintu-chart-stream"></div>
+      <div class="pintu-chart-note" id="pintu-chart-note"></div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="sec sec-off" id="pintu">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">06</span><div class="eye-bar"></div></div>
+    <h2 class="sec-title rv">Jumlah Kunjungan<br/>Berdasarkan <span class="t">Pintu Masuk</span></h2>
+    <p class="sec-sub rv">Bandara · Pelabuhan · Darat — 2024</p>
+    <div class="gw-cards">
+      <div class="gwc air rv"><div class="gwc-icon">✈️</div><div class="gwc-lbl">Pintu Udara</div><div class="gwc-val" data-target="10819291">0</div><div class="gwc-sub">kunjungan · 2024</div><div class="gwc-pct">77.9%</div></div>
+      <div class="gwc sea rv" style="transition-delay:.1s"><div class="gwc-icon">🚢</div><div class="gwc-lbl">Pintu Laut</div><div class="gwc-val" data-target="2760838">0</div><div class="gwc-sub">kunjungan · 2024</div><div class="gwc-pct">19.9%</div></div>
+      <div class="gwc land rv" style="transition-delay:.2s"><div class="gwc-icon">🛣️</div><div class="gwc-lbl">Pintu Darat</div><div class="gwc-val" data-target="306549">0</div><div class="gwc-sub">kunjungan · 2024</div><div class="gwc-pct">2.2%</div></div>
+    </div>
+    <div class="abox rv">
+      <div class="abox-title">🏆 Top 5 Pintu Masuk Utama — Jumlah Kunjungan 2024</div>
+      <div class="ab-rows">
+        <div class="ab"><div class="ab-name">✈️ Ngurah Rai (Bali)</div><div class="ab-track"><div class="ab-fill" data-pct="100" style="background:var(--teal)"></div></div><div class="ab-num">9,83 Juta</div></div>
+        <div class="ab"><div class="ab-name">✈️ Soekarno-Hatta (Jakarta)</div><div class="ab-track"><div class="ab-fill" data-pct="64" style="background:#6366f1"></div></div><div class="ab-num">6,31 Juta</div></div>
+        <div class="ab"><div class="ab-name">🚢 Batam (Kepulauan Riau)</div><div class="ab-track"><div class="ab-fill" data-pct="28" style="background:var(--blue)"></div></div><div class="ab-num">2,77 Juta</div></div>
+        <div class="ab"><div class="ab-name">✈️ Juanda (Surabaya)</div><div class="ab-track"><div class="ab-fill" data-pct="26" style="background:#ec4899"></div></div><div class="ab-num">2,52 Juta</div></div>
+        <div class="ab"><div class="ab-name">🚢 Tanjung Uban (Kepri)</div><div class="ab-track"><div class="ab-fill" data-pct="13" style="background:#f97316"></div></div><div class="ab-num">1,32 Juta</div></div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<svg class="wdiv" style="background:#fff" viewBox="0 0 1440 55"><path d="M0,0 C400,55 1040,0 1440,35 L1440,0 Z" fill="var(--off)"/></svg>
+
+<section class="sec sec-white" id="pola">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">07</span><div class="eye-bar"></div></div>
+    <h2 class="sec-title rv">Pola <span class="t">Bulanan</span></h2>
+    <p class="sec-sub rv">Bulan Apa Kunjungan Paling Tinggi?</p>
+    <p class="body rv">Juli–Agustus selalu menjadi puncak karena bertepatan dengan <strong>liburan musim panas</strong> negara-negara asal wisatawan terbesar. Desember melonjak karena <strong>libur Natal &amp; Tahun Baru</strong> global.</p>
+    <div class="ytabs rv" id="ytabs">
+      <button class="ytab on" data-y="2023">2023</button>
+      <button class="ytab" data-y="2024">2024</button>
+      <button class="ytab" data-y="2025">2025</button>
+    </div>
+    <div class="cbox rv" style="margin-bottom:1rem"><canvas id="cMonthly" height="280"></canvas></div>
+    <div class="rv"><div class="peak-ribbon">📌 Puncak: <span id="peakM">Agustus 2025</span> · <span id="peakV">1,51 Juta kunjungan</span></div></div>
+    <div class="insight-box rv">
+      <div class="ins-title">📊 Kenapa Tinggi di Bulan Itu?</div>
+      <div class="ins-text" id="monthInsight">Juli–Agustus 2025 mencatat 1,48–1,51 juta/bulan, bertepatan dengan musim panas Eropa, Australia, dan Amerika. Desember 2025 (1,41 juta) kuat berkat libur Natal dan Tahun Baru.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-off" id="hotel">
+  <div class="con">
+    <div class="sec-eye rv"><span class="eye-num">08</span><div class="eye-bar"></div></div>
+    <h2 class="sec-title rv">Tingkat Penghunian<br/><span class="t">Kamar Hotel</span></h2>
+    <p class="sec-sub rv">Hotel Berbintang per Provinsi · 2024 (%)</p>
+    <div class="two" style="align-items:start">
+      <div>
+        <p class="body rv"><strong>Bali</strong> memimpin TPK Hotel Berbintang 2024 dengan <strong>62,36%</strong> — naik drastis dari 52,88% di 2023. Ini cerminan pemulihan penuh Bali sebagai destinasi wisata dunia.</p>
+        <p class="body rv">Kalimantan Timur (65,11%) unggul berkat wisata bisnis (IKN). Rata-rata nasional mencapai <strong>52,56%</strong> di 2024, naik dari 51,12% di 2023.</p>
+        <div class="tpk-grid rv">
+          <div class="tpk-card"><div class="tpk-prov">Bali</div><div class="tpk-val hi">62,36%</div><div class="tpk-lbl">TPK Bintang 2024</div><div class="tpk-trend"><span class="up">▲ +9,48%</span> vs 2023</div></div>
+          <div class="tpk-card"><div class="tpk-prov">Kalimantan Timur</div><div class="tpk-val hi">65,11%</div><div class="tpk-lbl">TPK Bintang 2024</div><div class="tpk-trend"><span class="up">▲ Tertinggi</span> nasional</div></div>
+          <div class="tpk-card"><div class="tpk-prov">DI Yogyakarta</div><div class="tpk-val">55,75%</div><div class="tpk-lbl">TPK Bintang 2024</div><div class="tpk-trend"><span class="dn">▼ -4,10%</span> vs 2023</div></div>
+          <div class="tpk-card"><div class="tpk-prov">DKI Jakarta</div><div class="tpk-val">53,28%</div><div class="tpk-lbl">TPK Bintang 2024</div><div class="tpk-trend"><span class="dn">▼ -2,03%</span> vs 2023</div></div>
+          <div class="tpk-card"><div class="tpk-prov">Nasional</div><div class="tpk-val">52,56%</div><div class="tpk-lbl">Rata-rata Indonesia</div><div class="tpk-trend"><span class="up">▲ +1,44%</span> vs 2023</div></div>
+          <div class="tpk-card"><div class="tpk-prov">Jawa Timur</div><div class="tpk-val">53,60%</div><div class="tpk-lbl">TPK Bintang 2024</div><div class="tpk-trend"><span class="up">▲ +0,04%</span> vs 2023</div></div>
+        </div>
+      </div>
+      <div class="rv-r"><div class="cbox y"><div class="clbl">TPK Hotel Berbintang — Top Provinsi 2024 (%)</div><canvas id="cTPK" height="360"></canvas></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="outro">
+  <div class="outro-in">
+    <span class="outro-icon rv">🏝️</span>
+    <h2 class="outro-title rv">Indonesia Terus<br/><span class="y">Bersinar</span></h2>
+    <p class="outro-sub rv">Dengan 15,39 juta kunjungan di 2025 dan momentum yang terus tumbuh, Indonesia semakin dekat melampaui rekor pre-pandemi 2019.</p>
+    <div class="outro-kpis rv">
+      <div class="ok"><div class="ok-val">15,39 Jt</div><div class="ok-lbl">Kunjungan 2025</div></div>
+      <div class="ok hi"><div class="ok-val">+10,8%</div><div class="ok-lbl">Growth 2025</div></div>
+      <div class="ok"><div class="ok-val">Malaysia</div><div class="ok-lbl">Wisatawan #1</div></div>
+      <div class="ok"><div class="ok-val">Bali</div><div class="ok-lbl">Top Destinasi</div></div>
+    </div>
+    <p class="outro-src rv">Sumber Data: Badan Pusat Statistik (BPS) Indonesia<br/>Kunjungan Wisman per Kebangsaan &amp; Pintu Masuk 2017–2025 · TPK Hotel Berbintang per Provinsi 2000–2024</p>
+  </div>
+</div>
+<div class="footer">
+  <div class="f-brand">🏄 Pariwisata <em>Indonesia</em></div>
+  <div class="f-copy">Data: BPS Indonesia · Webstory Visualisasi Data</div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+am5.ready(function() {
+  
+  var root = am5.Root.new("globe_div");
+  
+  root.setThemes([
+    am5themes_Animated.new(root)
+  ]);
+
+  var chart = root.container.children.push(am5map.MapChart.new(root, {
+    panX: "rotateX",
+    panY: "rotateY",
+    projection: am5map.geoOrthographic(),
+    paddingBottom: 20,
+    paddingTop: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    rotationX: 110,
+    rotationY: -10
+  }));
+
+  // Deep ocean gradient background
+  var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+  backgroundSeries.mapPolygons.template.setAll({
+    fill: am5.color(0x0a4a7c),
+    fillOpacity: 1,
+    strokeOpacity: 0
+  });
+  backgroundSeries.data.push({
+    geometry: am5map.getGeoRectangle(90, 180, -90, -180)
+  });
+
+  // Graticule lines (latitude/longitude grid) — subtle
+  var graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
+  graticuleSeries.mapLines.template.setAll({
+    stroke: am5.color(0x1a6fa8),
+    strokeOpacity: 0.25,
+    strokeWidth: 0.4
+  });
+
+  var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+    geoJSON: am5geodata_worldLow,
+    exclude: ["AQ"],
+    valueField: "value",
+    calculateAggregates: true
+  }));
+
+  polygonSeries.mapPolygons.template.setAll({
+    tooltipText: "{name}\n{visitorsText} kunjungan",
+    interactive: true,
+    fill: am5.color(0xd1d5db),
+    stroke: am5.color(0x9ca3af),
+    strokeWidth: 0.4,
+    templateField: "polygonSettings"
+  });
+
+  polygonSeries.mapPolygons.template.states.create("hover", {
+    fill: am5.color(0xf59e0b),
+    stroke: am5.color(0xd97706),
+    strokeWidth: 1.5
+  });
+
+  // Heat rules: putih ke hijau tua (lebih kontras dan tropis)
+  polygonSeries.set("heatRules", [{
+    target: polygonSeries.mapPolygons.template,
+    dataField: "value",
+    min: am5.color(0xd1fae5),  // hijau muda
+    max: am5.color(0x064e3b),  // hijau tua
+    key: "fill"
+  }]);
+
+  // Tooltip styling
+  polygonSeries.mapPolygons.template.setAll({
+    tooltipText: "{name}: {visitorsText} kunjungan",
+    interactive: true
+  });
+
+  var mapData = [
+    { id: "MY", value: 2639749 },
+    { id: "AU", value: 1754791 },
+    { id: "SG", value: 1526438 },
+    { id: "CN", value: 1344074 },
+    { id: "TL", value: 1009181 },
+    { id: "IN", value: 734490 },
+    { id: "KR", value: 496862 },
+    { id: "GB", value: 412902 },
+    { id: "US", value: 412115 },
+    { id: "JP", value: 380079 },
+    { id: "FR", value: 367904 },
+    { id: "DE", value: 287596 },
+    { id: "NL", value: 251941 },
+    { id: "PH", value: 246728 },
+    { id: "RU", value: 219162 },
+    { id: "NZ", value: 181081 },
+    { id: "SA", value: 156318 },
+    { id: "PG", value: 156138 },
+    { id: "IT", value: 146360 },
+    { id: "ES", value: 140245 },
+    { id: "TH", value: 112137 },
+    { id: "CA", value: 97558 },
+    { id: "VN", value: 87398 },
+    { id: "PL", value: 68100 },
+    { id: "TR", value: 66902 },
+    { id: "CH", value: 60616 },
+    { id: "MM", value: 57147 },
+    { id: "BE", value: 55493 },
+    { id: "DK", value: 44309 },
+    { id: "PT", value: 41193 },
+    { id: "IE", value: 39607 },
+    { id: "SE", value: 38719 },
+    { id: "PK", value: 36348 },
+    { id: "BR", value: 34497 },
+    { id: "AT", value: 34095 },
+    { id: "BN", value: 31797 },
+    { id: "UA", value: 30688 },
+    { id: "CZ", value: 27209 },
+    { id: "RO", value: 27191 },
+    { id: "KZ", value: 24424 },
+    { id: "NO", value: 23721 },
+    { id: "EG", value: 22030 },
+    { id: "HU", value: 21042 },
+    { id: "BD", value: 19329 },
+    { id: "MA", value: 17382 },
+    { id: "MX", value: 16725 },
+    { id: "OM", value: 16663 },
+    { id: "CO", value: 16045 },
+    { id: "NP", value: 15836 },
+    { id: "FI", value: 14382 },
+    { id: "AR", value: 13214 },
+    { id: "GR", value: 13029 },
+    { id: "LK", value: 12998 },
+    { id: "SK", value: 11910 },
+    { id: "AE", value: 11293 },
+    { id: "TN", value: 11216 },
+    { id: "KH", value: 10949 },
+    { id: "CL", value: 10712 },
+    { id: "UZ", value: 10480 },
+    { id: "BY", value: 10455 },
+    { id: "BG", value: 10303 },
+    { id: "LT", value: 9816 },
+    { id: "MN", value: 9708 },
+    { id: "JO", value: 9466 },
+    { id: "IR", value: 9438 },
+    { id: "YE", value: 7761 },
+    { id: "DZ", value: 7453 },
+    { id: "EE", value: 6744 },
+    { id: "SI", value: 6632 },
+    { id: "KE", value: 6098 },
+    { id: "IQ", value: 5679 },
+    { id: "RS", value: 5471 },
+    { id: "LV", value: 5406 },
+    { id: "HR", value: 5177 },
+    { id: "KW", value: 5166 },
+    { id: "LB", value: 4577 },
+    { id: "MV", value: 4125 },
+    { id: "SY", value: 3868 },
+    { id: "PE", value: 3659 },
+    { id: "LA", value: 3401 },
+    { id: "MU", value: 3333 },
+    { id: "PS", value: 3205 },
+    { id: "AZ", value: 2986 },
+    { id: "SD", value: 2603 },
+    { id: "CY", value: 2540 },
+    { id: "NG", value: 2442 },
+    { id: "BH", value: 2354 },
+    { id: "LU", value: 2230 },
+    { id: "LY", value: 2085 },
+    { id: "KG", value: 1973 },
+    { id: "AM", value: 1954 },
+    { id: "MT", value: 1934 },
+    { id: "TZ", value: 1791 },
+    { id: "QA", value: 1726 },
+    { id: "ZW", value: 1665 },
+    { id: "FJ", value: 1630 },
+    { id: "UY", value: 1478 },
+    { id: "IS", value: 1351 },
+    { id: "VE", value: 1309 },
+    { id: "GE", value: 1243 },
+    { id: "BA", value: 1184 },
+    { id: "GH", value: 1011 },
+    { id: "MK", value: 806 },
+    { id: "TM", value: 757 },
+    { id: "UG", value: 742 },
+    { id: "MD", value: 693 },
+    { id: "ET", value: 672 },
+    { id: "GT", value: 583 },
+    { id: "AF", value: 563 },
+    { id: "IL", value: 554 },
+    { id: "SO", value: 445 },
+    { id: "TT", value: 413 },
+    { id: "SR", value: 411 },
+    { id: "AO", value: 407 },
+    { id: "MG", value: 396 },
+    { id: "ZM", value: 381 },
+    { id: "SN", value: 347 },
+    { id: "AD", value: 346 },
+    { id: "SC", value: 340 },
+    { id: "CU", value: 332 },
+    { id: "NA", value: 332 },
+    { id: "RW", value: 296 },
+    { id: "LI", value: 288 },
+    { id: "BO", value: 268 },
+    { id: "PA", value: 259 },
+    { id: "PY", value: 241 },
+    { id: "VU", value: 241 },
+    { id: "ML", value: 209 },
+    { id: "SB", value: 200 },
+    { id: "SV", value: 191 },
+    { id: "HN", value: 177 },
+    { id: "TD", value: 148 },
+    { id: "AG", value: 145 },
+    { id: "ER", value: 139 },
+    { id: "TO", value: 116 },
+    { id: "BS", value: 107 },
+    { id: "WS", value: 102 },
+    { id: "DJ", value: 74 },
+    { id: "GY", value: 73 },
+    { id: "SM", value: 69 },
+    { id: "NI", value: 67 },
+    { id: "BI", value: 66 },
+    { id: "HT", value: 65 },
+    { id: "NE", value: 53 },
+    { id: "NR", value: 44 },
+    { id: "BZ", value: 37 },
+    { id: "PW", value: 30 },
+    { id: "KI", value: 28 },
+    { id: "TV", value: 20 },
+    { id: "MH", value: 9 },
+    { id: "FM", value: 9 }
+  ];
+
+  mapData.forEach(function(item) {
+    item.visitorsText = item.value.toLocaleString("id-ID");
+    item.value = Math.log10(item.value);
+  });
+
+  polygonSeries.data.setAll(mapData);
+
+  // Indonesia highlight — special marker
+  var pointSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
+  pointSeries.bullets.push(function() {
+    return am5.Bullet.new(root, {
+      sprite: am5.Circle.new(root, {
+        radius: 8,
+        fill: am5.color(0xe8a830),
+        stroke: am5.color(0xffffff),
+        strokeWidth: 2,
+        tooltipText: "Indonesia\n🏝️ Destinasi Utama",
+        layer: 50
+      })
+    });
+  });
+  pointSeries.data.push({
+    geometry: { type: "Point", coordinates: [117.5, -2.5] }
+  });
+
+  // Animasi rotasi — mulai dari Asia Tenggara
+  chart.animate({
+    key: "rotationX",
+    from: -110,
+    to: 250,
+    duration: 40000,
+    loops: Infinity
+  });
+  
+  chart.appear(1000, 100);
+
+  // Pause saat hover
+  var globeEl = document.getElementById("globe_div");
+  if (globeEl) {
+    globeEl.addEventListener("mouseenter", function() {
+      chart.animations.forEach(function(a) { a.pause(); });
+    });
+    globeEl.addEventListener("mouseleave", function() {
+      chart.animate({
+        key: "rotationX",
+        from: chart.get("rotationX"),
+        to: chart.get("rotationX") + 360,
+        duration: 40000,
+        loops: Infinity
+      });
+    });
+  }
+});
+</script>
+</body>
+</html>
