@@ -77,7 +77,7 @@ function makePandemi(){
     type:'bar',
     data:{labels:yrs,datasets:[{
       data:yrs.map(y=>annual[y]),
-      backgroundColor:'#ffff',
+      backgroundColor:'#FFC72C',
       borderRadius:5,borderWidth:0
     }]},
     options:{
@@ -91,7 +91,7 @@ function makePandemi(){
         x:{ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:11}},grid:{color:'rgba(255,255,255,.05)'}},
         y:{
           suggestedMax:20000000,
-          ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+'M'},
+          ticks:{color:'rgba(255,255,255,.35)',font:{family:'Oswald',size:10},callback:v=>(v/1e6).toFixed(0)+' jt'},
           grid:{color:'rgba(255,255,255,.05)'}
         }
       }
