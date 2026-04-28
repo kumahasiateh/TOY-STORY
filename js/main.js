@@ -634,45 +634,360 @@ function initDynamicPintu() {
 }
 
 makeIO('#pintu', initDynamicPintu, 0.1);
-/* ═══════════════════════════════
-   CHART GENERASI WISATAWAN (Donut)
-═══════════════════════════════ */
-function makeGenerasi() {
-  const el = document.getElementById('cGenerasi');
-  if (!el) return;
 
-  new Chart(el, {
+/* ═══════════════════════════════════════════════════════
+   GENERASI — Interactive Donut v2
+   - Klik segmen donut  → highlight baris + update center
+   - Hover/klik baris   → highlight segmen donut
+   - Reset saat klik di luar
+═══════════════════════════════════════════════════════ */
+function makeGenerasi() {
+  const canvas = document.getElementById('cGenerasi');
+  if (!canvas) return;
+
+  const GEN_DATA = [
+    { label: 'Post Gen Z',              pct: 6.99,  color: '#93c5fd', total: '971.339',   desc: 'Lahir \u22652013 \u00b7 \u226411 tahun' },
+    { label: 'Gen Z',                   pct: 16.92, color: '#60a5fa', total: '2.349.626', desc: 'Lahir 1997\u20132012 \u00b7 12\u201327 tahun' },
+    { label: 'Milenial',                pct: 32.27, color: '#e8a830', total: '4.481.927', desc: 'Lahir 1981\u20131996 \u00b7 28\u201343 tahun' },
+    { label: 'Gen X',                   pct: 24.96, color: '#fb923c', total: '3.466.614', desc: 'Lahir 1965\u20131980 \u00b7 44\u201359 tahun' },
+    { label: 'Baby Boomer & Pre-Boomer',pct: 18.87, color: '#a78bfa', total: '2.620.532', desc: 'Lahir \u22641964 \u00b7 \u226560 tahun' },
+  ];
+
+  const centerPct   = document.getElementById('genCenterPct');
+  const centerName  = document.getElementById('genCenterName');
+  const centerTotal = document.getElementById('genCenterTotal');
+
+  const centerImg = document.getElementById('genCenterImg');
+
+  function setCenter(idx) {
+    if (idx === null) {
+      // Tampilkan gambar, sembunyikan teks persen
+      centerPct.style.display   = 'none';
+      if (centerImg) centerImg.style.display = 'block';
+      centerName.textContent  = 'Semua Generasi';
+      centerTotal.textContent = '13,89 Jt kunjungan';
+    } else {
+      // Sembunyikan gambar, tampilkan teks persen
+      if (centerImg) centerImg.style.display = 'none';
+      centerPct.style.display   = '';
+      const d = GEN_DATA[idx];
+      centerPct.textContent   = d.pct.toFixed(2).replace('.', ',') + '%';
+      centerPct.style.color   = d.color;
+      centerName.textContent  = d.label;
+      centerTotal.textContent = '\u00b1' + d.total + ' kunjungan';
+    }
+  }
+
+  function highlightRow(idx) {
+    document.querySelectorAll('.gen2-row').forEach((row, i) => {
+      row.classList.toggle('active', i === idx);
+      if (i === idx) row.style.setProperty('--row-color', GEN_DATA[i].color);
+    });
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.gen2-row').forEach(r => r.classList.remove('active'));
+    setCenter(null);
+    chart.data.datasets[0].backgroundColor = GEN_DATA.map(d => d.color);
+    chart.data.datasets[0].borderWidth = Array(5).fill(2);
+    chart.update('none');
+  }
+
+  function selectIdx(idx) {
+    setCenter(idx);
+    highlightRow(idx);
+    chart.data.datasets[0].backgroundColor = GEN_DATA.map((d, i) =>
+      i === idx ? d.color : d.color + '44'
+    );
+    chart.data.datasets[0].borderWidth = GEN_DATA.map((_, i) => i === idx ? 0 : 1);
+    chart.update('none');
+  }
+
+  // Build chart
+  const chart = new Chart(canvas, {
     type: 'doughnut',
     data: {
-      labels: ['Post Gen Z', 'Gen Z', 'Milenial', 'Gen X', 'Baby Boomer & Pre-Boomer'],
+      labels: GEN_DATA.map(d => d.label),
       datasets: [{
-        data: [6.99, 16.92, 32.27, 24.96, 18.87],
-        backgroundColor: ['#93c5fd', '#60a5fa', '#1e3a5f', '#92400e', '#d97706'],
-        borderColor: 'rgba(13,158,143,.4)',
-        borderWidth: 3,
-        hoverOffset: 14
+        data:            GEN_DATA.map(d => d.pct),
+        backgroundColor: GEN_DATA.map(d => d.color),
+        borderColor:     'rgba(13,158,143,.3)',
+        borderWidth:     Array(5).fill(2),
+        hoverOffset:     18,
+        borderRadius:    4,
       }]
     },
     options: {
-      cutout: '62%',
+      cutout: '60%',
       responsive: true,
-      animation: { animateRotate: true, animateScale: false, duration: 1300, easing: 'easeOutQuart' },
+      animation: { animateRotate: true, duration: 1400, easing: 'easeOutQuart' },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(5,12,10,.95)',
-          titleColor: '#f0ede6',
-          bodyColor: '#e8c96a',
-          borderColor: 'rgba(255,255,255,.1)',
-          borderWidth: 1,
-          padding: 12,
+          enabled: true,
+          backgroundColor: 'rgba(5,18,14,.96)',
+          titleColor: '#fff', bodyColor: 'rgba(255,255,255,.65)',
+          borderColor: 'rgba(255,255,255,.1)', borderWidth: 1, padding: 14,
           callbacks: {
-            label: ctx => '  ' + ctx.label + ': ' + ctx.parsed + '%'
+            title: ctx => ctx[0].label,
+            label: ctx => '  ' + ctx.parsed.toFixed(2).replace('.', ',') + '%  \u2014  ' + GEN_DATA[ctx.dataIndex].desc,
           }
+        }
+      },
+      onClick(evt, elements) {
+        if (!elements.length) { resetAll(); return; }
+        const idx = elements[0].index;
+        selectIdx(idx);
+      },
+      onHover(evt, elements) {
+        canvas.style.cursor = elements.length ? 'pointer' : 'default';
+      }
+    }
+  });
+
+  // Animate bars in legend rows
+  document.querySelectorAll('.g2r-bar').forEach(bar => {
+    const pw = parseFloat(bar.dataset.pw);
+    // max bar width = 100% corresponds to 32.27 (the biggest)
+    bar.style.width = (pw / 32.27 * 100) + '%';
+  });
+
+  // Wire up legend rows
+  document.querySelectorAll('.gen2-row').forEach((row, i) => {
+    row.addEventListener('click', () => {
+      if (row.classList.contains('active')) { resetAll(); return; }
+      selectIdx(i);
+    });
+    row.addEventListener('mouseenter', () => {
+      if (document.querySelector('.gen2-row.active')) return;
+      setCenter(i);
+      chart.data.datasets[0].backgroundColor = GEN_DATA.map((d, j) =>
+        j === i ? d.color : d.color + '55'
+      );
+      chart.update('none');
+    });
+    row.addEventListener('mouseleave', () => {
+      if (document.querySelector('.gen2-row.active')) return;
+      resetAll();
+    });
+  });
+}
+
+makeIO('#generasi', makeGenerasi, 0.15);
+
+
+
+
+
+/* ═══════════════════════════════════════════════════════
+   PENGELUARAN — Panel 9 (Infografis + Counter + Lines)
+═══════════════════════════════════════════════════════ */
+
+const PENG_DATA = [
+  { id:'pcc0', pct:37.21, name:'Akomodasi',            color:'#0d9e8f', side:'left'  },
+  { id:'pcc1', pct:19.86, name:'Makan & Minum',        color:'#e8a830', side:'left'  },
+  { id:'pcc2', pct:11.38, name:'Belanja & Cinderamata', color:'#6366f1', side:'left'  },
+  { id:'pcc3', pct: 7.74, name:'Hiburan',               color:'#ec4899', side:'right' },
+  { id:'pcc4', pct: 7.01, name:'Paket Tour Lokal',      color:'#f97316', side:'right' },
+  { id:'pcc5', pct:16.80, name:'Lainnya',               color:'#64748b', side:'right' },
+];
+
+/* ── Smooth counter animation (like pintu panel) ── */
+function animPengCounter(el, target, dur=1800) {
+  if (el.dataset.animated) return;
+  el.dataset.animated = '1';
+  const start = performance.now();
+  (function tick(now) {
+    const p    = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 4);
+    el.textContent = (target * ease).toFixed(2).replace('.', ',') + '%';
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = target.toFixed(2).replace('.', ',') + '%';
+  })(start);
+}
+
+/* ── Draw SVG connector lines from figure to cards ── */
+function drawPengLines(activeIdx = null) {
+  const svg    = document.getElementById('pengLinesSvg');
+  const wrap   = document.getElementById('pengSpiderWrap');
+  const figure = document.getElementById('pengFigure');
+  if (!svg || !wrap || !figure) return;
+
+  svg.innerHTML = '';
+
+  const wRect = wrap.getBoundingClientRect();
+  const fRect = figure.getBoundingClientRect();
+
+  // Figure center (relative to wrap)
+  const fx = fRect.left - wRect.left + fRect.width / 2;
+  const fy = fRect.top  - wRect.top  + fRect.height / 2;
+
+  PENG_DATA.forEach((d, i) => {
+    const card = document.getElementById(d.id);
+    if (!card) return;
+    const cRect  = card.getBoundingClientRect();
+    const isRight = d.side === 'right';
+
+    // Anchor point on card edge closest to figure
+    const cx = cRect.left - wRect.left + (isRight ? 0 : cRect.width);
+    const cy = cRect.top  - wRect.top  + cRect.height / 2;
+
+    const isActive  = activeIdx === i;
+    const isInactive = activeIdx !== null && !isActive;
+
+    const opacity  = isInactive ? 0.15 : 0.7;
+    const strokeW  = isActive ? 2.5 : 1.5;
+    const color    = d.color;
+
+    // Bezier curve
+    const cpx = (fx + cx) / 2;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M${fx},${fy} Q${cpx},${fy} ${cpx},${cy} Q${cpx},${cy} ${cx},${cy}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', strokeW);
+    path.setAttribute('stroke-dasharray', isActive ? 'none' : '5,4');
+    path.setAttribute('opacity', opacity);
+    path.style.transition = 'opacity .3s';
+
+    // Dot at card end
+    const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx', cx);
+    dot.setAttribute('cy', cy);
+    dot.setAttribute('r', isActive ? 5 : 3);
+    dot.setAttribute('fill', color);
+    dot.setAttribute('opacity', opacity);
+
+    svg.appendChild(path);
+    svg.appendChild(dot);
+  });
+}
+
+/* ── Interactive: hover + click on cards ── */
+let pengActiveIdx = null;
+
+function pengSelectIdx(idx) {
+  pengActiveIdx = idx;
+  document.querySelectorAll('.peng-cat-card').forEach((card, i) => {
+    card.classList.toggle('pcc-active', i === idx);
+  });
+  drawPengLines(idx);
+  // Bounce the figure
+  const fig = document.getElementById('pengFigure');
+  if (fig) {
+    fig.style.transform = 'scale(1.1) translateY(-6px)';
+    setTimeout(() => { fig.style.transform = ''; }, 300);
+  }
+}
+
+function pengResetAll() {
+  pengActiveIdx = null;
+  document.querySelectorAll('.peng-cat-card').forEach(card => card.classList.remove('pcc-active'));
+  drawPengLines(null);
+}
+
+function makePengInteractive() {
+  // Wire cards
+  document.querySelectorAll('.peng-cat-card').forEach((card, i) => {
+    card.addEventListener('click', () => {
+      if (pengActiveIdx === i) { pengResetAll(); return; }
+      pengSelectIdx(i);
+    });
+    card.addEventListener('mouseenter', () => {
+      if (pengActiveIdx !== null) return;
+      drawPengLines(i);
+      document.querySelectorAll('.peng-cat-card').forEach((c, j) => {
+        c.style.opacity = j === i ? '1' : '0.6';
+      });
+    });
+    card.addEventListener('mouseleave', () => {
+      if (pengActiveIdx !== null) return;
+      drawPengLines(null);
+      document.querySelectorAll('.peng-cat-card').forEach(c => c.style.opacity = '');
+    });
+  });
+
+  // Redraw on resize
+  window.addEventListener('resize', () => drawPengLines(pengActiveIdx));
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.pcc-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.bw || '0%';
+    });
+  }, 200);
+
+  // Animate % counters
+  document.querySelectorAll('.pcc-counter').forEach(el => {
+    animPengCounter(el, parseFloat(el.dataset.target));
+  });
+
+  // Draw lines after a tick (images may still load)
+  setTimeout(() => drawPengLines(null), 400);
+}
+
+/* ── Trend line chart ── */
+function makePengTren() {
+  const el = document.getElementById('cPengTren');
+  if (!el) return;
+  new Chart(el, {
+    type: 'line',
+    data: {
+      labels: ['2019','2020','2021','2022','2023','2024'],
+      datasets: [{
+        data: [1145.64, 2165.02, 3097.41, 1448.01, 1625.36, 1391.85],
+        borderColor: '#0d9e8f', borderWidth: 2.5, tension: .4,
+        pointBackgroundColor: ['#6366f1','#e8a830','#e8a830','#10b981','#10b981','#0d9e8f'],
+        pointRadius: 6, pointHoverRadius: 9,
+        fill: { target: 'origin', above: 'rgba(13,158,143,.07)' }
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 1300, easing: 'easeOutCubic' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...lTooltip,
+          callbacks: { label: c => '  US$ ' + c.raw.toLocaleString('id-ID', {minimumFractionDigits:2}) }
+        }
+      },
+      scales: {
+        x: { ticks:{ color:'#9a9890', font:{ family:'Oswald', size:10 } }, grid:{ color:'rgba(0,0,0,.04)' } },
+        y: {
+          suggestedMin:0, suggestedMax:3500,
+          ticks:{ color:'#9a9890', font:{ family:'Oswald', size:9 }, callback: v => 'US$' + v.toLocaleString() },
+          grid:{ color:'rgba(0,0,0,.05)' }
         }
       }
     }
   });
 }
 
-makeIO('#generasi', makeGenerasi, 0.15);
+/* ── Top 3: rolling counter + bar ── */
+function makePengTop3() {
+  document.querySelectorAll('.pt3s-amt[data-target]').forEach(el => {
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
+    const target = parseFloat(el.dataset.target);
+    const start  = performance.now();
+    (function tick(now) {
+      const p    = Math.min((now - start) / 2000, 1);
+      const ease = 1 - Math.pow(1 - p, 5);   // quintic — snappy like pintu panel
+      el.textContent = (target * ease).toLocaleString('id-ID', { minimumFractionDigits:2, maximumFractionDigits:2 });
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString('id-ID', { minimumFractionDigits:2, maximumFractionDigits:2 });
+    })(start);
+  });
+
+  document.querySelectorAll('.pt3s-bar-fill').forEach(el => {
+    setTimeout(() => { el.style.width = el.dataset.pct + '%'; }, 200);
+  });
+}
+
+/* Trigger on scroll */
+makeIO('#pengeluaran', () => {
+  makePengInteractive();
+  makePengTren();
+  makePengTop3();
+}, 0.1);
