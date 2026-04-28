@@ -600,6 +600,22 @@ body{font-family:'Lato',sans-serif;background:#f5f5f0;color:#1a1a1a;overflow-x:h
   z-index: 2;
 }
 
+.tourism{
+  position:absolute;
+  top: -120px;   /* bisa kamu adjust */
+  right: -100px;
+  width: 50%;
+  z-index: 2;
+}
+
+.kamboja{
+  position:absolute;
+  top: -120px;   /* bisa kamu adjust */
+  right: -100px;
+  width: 50%;
+  z-index: 2;
+}
+
 .sec-maskot{
   padding: 200px 0;   /* space atas bawah */
   position: relative;
@@ -615,23 +631,38 @@ body{font-family:'Lato',sans-serif;background:#f5f5f0;color:#1a1a1a;overflow-x:h
 /* kiri */
 .maskot.kiri{
   position: absolute;
-  left: -100px; /* bisa kamu adjust untuk posisi horizontal */
+  left: 50px; /* bisa kamu adjust untuk posisi horizontal */
   bottom: 0;
-  width: 80%;
+  width: 70%;
   animation: goyang 2s infinite ease-in-out;
   transform-origin: bottom center;
-  top: -200px; /* bisa kamu adjust untuk posisi vertikal */
+  top: -60px; /* bisa kamu adjust untuk posisi vertikal */
+  z-index: 1;
+}
+
+.bali{
+  position: absolute;
+  /* bisa kamu adjust untuk posisi horizontal */
+  bottom: 0;
+  right: 210px;
+  width: 60%;
+  animation: goyang 2s infinite ease-in-out;
+  transform-origin: bottom center;
+  top: -220px; /* bisa kamu adjust untuk posisi vertikal */
+  z-index: 2;
 }
 
 /* kanan */
 .maskot.kanan{
   position: absolute;
-  right: -100px; /* bisa kamu adjust untuk posisi horizontal */
+  /* bisa kamu adjust untuk posisi horizontal */
   bottom: 0;
-  width: 80%;
+  right: 30px;
+  width: 70%;
   animation: goyang 2s infinite ease-in-out;
   transform-origin: bottom center;
-  top: -200px; /* bisa kamu adjust untuk posisi vertikal */
+  top: -60px; /* bisa kamu adjust untuk posisi vertikal */
+  z-index: 2;
 }
 
 @keyframes goyang {
@@ -642,6 +673,28 @@ body{font-family:'Lato',sans-serif;background:#f5f5f0;color:#1a1a1a;overflow-x:h
   100% { transform: rotate(0deg); }
 }
 
+.ornamen.kiri{
+  position: absolute;
+  left: 100 px; /* bisa kamu adjust untuk posisi horizontal */
+  bottom: 10px;
+  right: 430px; /* bisa kamu adjust untuk posisi horizontal */
+  width: 80%;
+  transform-origin: bottom center;
+  top: -150px; /* bisa kamu adjust untuk posisi vertikal */
+  z-index: 1;
+}
+
+.ornamen.kanan{
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  width: 80%;
+  left: 430px; /* bisa kamu adjust untuk posisi horizontal */
+  transform-origin: bottom center;
+  transform: scaleX(-1);
+  top: -150px; /* bisa kamu adjust untuk posisi vertikal */
+  z-index: 1;
+}
 
 /* ═══════════════════════════════
    GENERASI — LAYOUT v2 (Interactive)
