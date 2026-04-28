@@ -77,7 +77,7 @@ function makePandemi(){
     type:'bar',
     data:{labels:yrs,datasets:[{
       data:yrs.map(y=>annual[y]),
-      backgroundColor:'#00B894',
+      backgroundColor:'#ffff',
       borderRadius:5,borderWidth:0
     }]},
     options:{
