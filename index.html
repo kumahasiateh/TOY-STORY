@@ -140,11 +140,13 @@
     <div class="sec-eye rv"><span class="eye-num">04</span><div class="eye-bar"></div></div>
     <h2 class="sec-title rv">Sebaran Wisatawan<br/><span class="t">Global</span></h2>
     <p class="sec-sub rv">Intensitas Kunjungan Berdasarkan Negara Asal (Tahun 2025)</p>
-    <p class="body rv">Peta interaktif berbentuk globe di bawah ini memvisualisasikan data pengunjung secara proporsional dari 150+ negara yang tercatat oleh BPS. Semakin gelap hijau warna suatu negara, semakin tinggi angka kunjungannya ke Indonesia. <em>(Sentuh/geser globe untuk memutar, hover negara untuk melihat angka)</em></p>
     
-    <div class="globe-wrapper rv" style="margin-top:2rem;">
+    <div class="globe-wrapper rv" style="margin-top:2rem; position:relative;">
+      <div id="globe-overlay" style="position:absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(10, 74, 124, 0.95); color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 18px; opacity: 0; transition: opacity 0.5s; z-index: 10; pointer-events: none; border: 1px solid #1a6fa8; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-align: center;"></div>
+      
       <div id="globe_div" style="width: 100%; height: 520px;"></div>
     </div>
+    
     <div class="globe-stat-pills rv">
       <div class="globe-stat-pill"><div class="gsp-val">150+</div><div class="gsp-lbl">Negara Asal</div></div>
       <div class="globe-stat-pill" style="border-left-color:var(--yellow)"><div class="gsp-val" style="color:var(--yellow-d)">Malaysia</div><div class="gsp-lbl">Terbesar #1</div></div>
@@ -212,29 +214,6 @@
     </div>
   </div>
 </section>
-
-<!-- <section class="sec sec-off" id="pintu">
-  <div class="con">
-    <div class="sec-eye rv"><span class="eye-num">06</span><div class="eye-bar"></div></div>
-    <h2 class="sec-title rv">Jumlah Kunjungan<br/>Berdasarkan <span class="t">Pintu Masuk</span></h2>
-    <p class="sec-sub rv">Bandara · Pelabuhan · Darat — 2024</p>
-    <div class="gw-cards">
-      <div class="gwc air rv"><div class="gwc-icon">✈️</div><div class="gwc-lbl">Pintu Udara</div><div class="gwc-val" data-target="10819291">0</div><div class="gwc-sub">kunjungan · 2024</div><div class="gwc-pct">77.9%</div></div>
-      <div class="gwc sea rv" style="transition-delay:.1s"><div class="gwc-icon">🚢</div><div class="gwc-lbl">Pintu Laut</div><div class="gwc-val" data-target="2760838">0</div><div class="gwc-sub">kunjungan · 2024</div><div class="gwc-pct">19.9%</div></div>
-      <div class="gwc land rv" style="transition-delay:.2s"><div class="gwc-icon">🛣️</div><div class="gwc-lbl">Pintu Darat</div><div class="gwc-val" data-target="306549">0</div><div class="gwc-sub">kunjungan · 2024</div><div class="gwc-pct">2.2%</div></div>
-    </div>
-    <div class="abox rv">
-      <div class="abox-title">🏆 Top 5 Pintu Masuk Utama — Jumlah Kunjungan 2024</div>
-      <div class="ab-rows">
-        <div class="ab"><div class="ab-name">✈️ Ngurah Rai (Bali)</div><div class="ab-track"><div class="ab-fill" data-pct="100" style="background:var(--teal)"></div></div><div class="ab-num">9,83 Juta</div></div>
-        <div class="ab"><div class="ab-name">✈️ Soekarno-Hatta (Jakarta)</div><div class="ab-track"><div class="ab-fill" data-pct="64" style="background:#6366f1"></div></div><div class="ab-num">6,31 Juta</div></div>
-        <div class="ab"><div class="ab-name">🚢 Batam (Kepulauan Riau)</div><div class="ab-track"><div class="ab-fill" data-pct="28" style="background:var(--blue)"></div></div><div class="ab-num">2,77 Juta</div></div>
-        <div class="ab"><div class="ab-name">✈️ Juanda (Surabaya)</div><div class="ab-track"><div class="ab-fill" data-pct="26" style="background:#ec4899"></div></div><div class="ab-num">2,52 Juta</div></div>
-        <div class="ab"><div class="ab-name">🚢 Tanjung Uban (Kepri)</div><div class="ab-track"><div class="ab-fill" data-pct="13" style="background:#f97316"></div></div><div class="ab-num">1,32 Juta</div></div>
-      </div>
-    </div>
-  </div>
-</section> -->
 
 <svg class="wdiv" style="background:#fff" viewBox="0 0 1440 55"><path d="M0,0 C400,55 1040,0 1440,35 L1440,0 Z" fill="var(--off)"/></svg>
 
@@ -324,7 +303,6 @@ am5.ready(function() {
     rotationY: -10
   }));
 
-  // Deep ocean gradient background
   var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
   backgroundSeries.mapPolygons.template.setAll({
     fill: am5.color(0x0a4a7c),
@@ -335,7 +313,6 @@ am5.ready(function() {
     geometry: am5map.getGeoRectangle(90, 180, -90, -180)
   });
 
-  // Graticule lines (latitude/longitude grid) — subtle
   var graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
   graticuleSeries.mapLines.template.setAll({
     stroke: am5.color(0x1a6fa8),
@@ -365,20 +342,13 @@ am5.ready(function() {
     strokeWidth: 1.5
   });
 
-  // Heat rules: putih ke hijau tua (lebih kontras dan tropis)
   polygonSeries.set("heatRules", [{
     target: polygonSeries.mapPolygons.template,
     dataField: "value",
-    min: am5.color(0xd1fae5),  // hijau muda
-    max: am5.color(0x064e3b),  // hijau tua
+    min: am5.color(0xd1fae5),  
+    max: am5.color(0x064e3b),  
     key: "fill"
   }]);
-
-  // Tooltip styling
-  polygonSeries.mapPolygons.template.setAll({
-    tooltipText: "{name}: {visitorsText} kunjungan",
-    interactive: true
-  });
 
   var mapData = [
     { id: "MY", value: 2639749 },
@@ -541,7 +511,6 @@ am5.ready(function() {
 
   polygonSeries.data.setAll(mapData);
 
-  // Indonesia highlight — special marker
   var pointSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
   pointSeries.bullets.push(function() {
     return am5.Bullet.new(root, {
@@ -559,33 +528,133 @@ am5.ready(function() {
     geometry: { type: "Point", coordinates: [117.5, -2.5] }
   });
 
-  // Animasi rotasi — mulai dari Asia Tenggara
-  chart.animate({
-    key: "rotationX",
-    from: -110,
-    to: 250,
-    duration: 40000,
-    loops: Infinity
+  var overlay = document.getElementById("globe-overlay");
+  var top5Countries = [
+    { id: "MY", label: "Top 1: Malaysia", val: "2.639.749", zoom: 2.5 },
+    { id: "AU", label: "Top 2: Australia", val: "1.754.791", zoom: 1.5 },
+    { id: "SG", label: "Top 3: Singapore", val: "1.526.438", zoom: 5.0 },
+    { id: "CN", label: "Top 4: China", val: "1.344.074", zoom: 1.5 },
+    { id: "TL", label: "Top 5: Timor Leste", val: "1.009.181", zoom: 4.0 }
+  ];
+  var currentIndex = 0;
+  var infiniteRotation;
+
+  function startTour() {
+    if (currentIndex < top5Countries.length) {
+      var currentData = top5Countries[currentIndex];
+      var dataItem = polygonSeries.getDataItemById(currentData.id);
+      
+      if (dataItem) {
+        overlay.innerHTML = "🏆 " + currentData.label + "<br/><span style='font-size:14px; font-weight:normal;'>" + currentData.val + " Kunjungan</span>";
+        overlay.style.opacity = "1";
+
+        var polygon = dataItem.get("mapPolygon");
+        if (polygon) {
+          polygon.states.applyAnimate("hover");
+          
+          // Mengalkulasi titik pusat riil dari bentuk geometri negara bersangkutan
+          var centroid = polygon.geoCentroid();
+          if (centroid) {
+            
+            // Kunci pusat zoom agar senantiasa jatuh di koordinat nol absolut container SVG (tengah layar)
+            chart.set("zoomX", 0.5);
+            chart.set("zoomY", 0.5);
+
+            chart.animate({
+              key: "rotationX",
+              to: -centroid.longitude,
+              duration: 1200,
+              easing: am5.ease.inOut(am5.ease.cubic)
+            });
+            chart.animate({
+              key: "rotationY",
+              to: -centroid.latitude,
+              duration: 1200,
+              easing: am5.ease.inOut(am5.ease.cubic)
+            });
+            
+            chart.animate({
+              key: "zoomLevel",
+              to: currentData.zoom,
+              duration: 1200,
+              easing: am5.ease.inOut(am5.ease.cubic)
+            });
+          }
+        }
+
+        setTimeout(function() {
+          if (polygon) polygon.states.applyAnimate("default");
+          currentIndex++;
+          startTour();
+        }, 3500);
+      } else {
+        currentIndex++;
+        startTour();
+      }
+    } else {
+      overlay.style.opacity = "0";
+      
+      chart.set("zoomX", 0.5);
+      chart.set("zoomY", 0.5);
+      
+      chart.animate({
+        key: "rotationY",
+        to: -10,
+        duration: 1500,
+        easing: am5.ease.inOut(am5.ease.cubic)
+      });
+      chart.animate({
+        key: "rotationX",
+        to: 110,
+        duration: 1500,
+        easing: am5.ease.inOut(am5.ease.cubic)
+      });
+      chart.animate({
+        key: "zoomLevel",
+        to: 1,
+        duration: 1500,
+        easing: am5.ease.inOut(am5.ease.cubic)
+      });
+      
+      setTimeout(function() {
+        infiniteRotation = chart.animate({
+          key: "rotationX",
+          from: chart.get("rotationX"),
+          to: chart.get("rotationX") + 360,
+          duration: 40000,
+          loops: Infinity
+        });
+      }, 1500);
+    }
+  }
+
+  polygonSeries.events.once("datavalidated", function() {
+    var tourStarted = false;
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting && !tourStarted) {
+        tourStarted = true;
+        setTimeout(startTour, 600);
+      }
+    }, { threshold: 0.3 });
+    
+    var petaSection = document.getElementById("peta");
+    if (petaSection) {
+      observer.observe(petaSection);
+    }
   });
-  
+
   chart.appear(1000, 100);
 
-  // Pause saat hover
   var globeEl = document.getElementById("globe_div");
   if (globeEl) {
     globeEl.addEventListener("mouseenter", function() {
-      chart.animations.forEach(function(a) { a.pause(); });
+      if (infiniteRotation) infiniteRotation.pause();
     });
     globeEl.addEventListener("mouseleave", function() {
-      chart.animate({
-        key: "rotationX",
-        from: chart.get("rotationX"),
-        to: chart.get("rotationX") + 360,
-        duration: 40000,
-        loops: Infinity
-      });
+      if (infiniteRotation) infiniteRotation.play();
     });
   }
+
 });
 </script>
 </body>
