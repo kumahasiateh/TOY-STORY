@@ -10,16 +10,16 @@ const monthly={
 };
 const months=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
 const nat2025=[
-  {name:'🇲🇾 Malaysia',val:2639749},
-  {name:'🇦🇺 Australia',val:1754791},
-  {name:'🇸🇬 Singapura',val:1526438},
-  {name:'🇨🇳 Tiongkok',val:1344074},
-  {name:'🇹🇱 Timor Leste',val:1009181},
-  {name:'🇮🇳 India',val:734490},
-  {name:'🇰🇷 Korea Selatan',val:496862},
-  {name:'🇬🇧 Inggris',val:412902},
-  {name:'🇺🇸 USA',val:412115},
-  {name:'🇯🇵 Jepang',val:380079},
+  {name:'Malaysia',val:2639749},
+  {name:'Australia',val:1754791},
+  {name:'Singapura',val:1526438},
+  {name:'Tiongkok',val:1344074},
+  {name:'Timor Leste',val:1009181},
+  {name:'India',val:734490},
+  {name:'Korea Selatan',val:496862},
+  {name:'Inggris',val:412902},
+  {name:'USA',val:412115},
+  {name:'Jepang',val:380079},
 ];
 const tpk2024=[
   {p:'Kalimantan Timur',v:65.11},{p:'Bali',v:62.36},{p:'Kalimantan Selatan',v:56.40},
