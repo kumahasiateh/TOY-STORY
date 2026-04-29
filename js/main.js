@@ -4,6 +4,36 @@
 (function(){
   const wrap = document.querySelector('.hero-video-wrap');
   if (!wrap) return;
+  const heroVideo = wrap.querySelector('video');
+  if (heroVideo) {
+    // Mainkan file penuh tanpa cutting, tapi lompatkan rentang yang ingin disembunyikan.
+    const skipRanges = [
+      [9, 12],
+      [40, 46],
+      [79, 80],   // 1:19 - 1:20
+      [83, 89],   // 1:23 - 1:29
+      [102, 103]  // 1:42 - 1:43
+    ];
+    const playbackEnd = 128; // 2:08
+    const EPS = 0.08;
+
+    const enforceTimeline = () => {
+      const t = heroVideo.currentTime;
+      for (const [start, end] of skipRanges) {
+        if (t >= start && t < end) {
+          heroVideo.currentTime = end + EPS;
+          return;
+        }
+      }
+      if (t >= playbackEnd) {
+        heroVideo.currentTime = playbackEnd;
+        heroVideo.pause();
+      }
+    };
+
+    heroVideo.addEventListener('timeupdate', enforceTimeline);
+    heroVideo.addEventListener('seeking', enforceTimeline);
+  }
 
   const MAX = 18;
 
@@ -211,6 +241,7 @@ function makeMonthly(yr){
     }]},
     options:{
       responsive:true,
+      maintainAspectRatio:false,
       animation:{duration:600,easing:'easeOutCubic'},
       plugins:{
         legend:{display:false},
@@ -237,8 +268,10 @@ function makeMonthly(yr){
 }
 
 function makeTPK(){
+  const tpkCanvas = document.getElementById('cTPK');
+  if (!tpkCanvas) return;
   const s=[...tpk2024].sort((a,b)=>b.v-a.v);
-  new Chart(document.getElementById('cTPK'),{
+  new Chart(tpkCanvas,{
     type:'bar',
     data:{labels:s.map(d=>d.p),datasets:[{
       data:s.map(d=>d.v),
@@ -263,6 +296,85 @@ function makeTPK(){
       }
     }
   });
+}
+
+/* ═══════════════════════════════
+   PETA INDONESIA — HUNIAN HOTEL 2024
+═══════════════════════════════ */
+function makeIndoMap() {
+  const mapEl = document.getElementById('indo_map_div');
+  if (!mapEl || mapEl.dataset.rendered) return;
+  if (typeof am5 === 'undefined' || typeof am5map === 'undefined' || typeof am5geodata_indonesiaLow === 'undefined') return;
+  mapEl.dataset.rendered = '1';
+
+  const root = am5.Root.new('indo_map_div');
+  root.setThemes([am5themes_Animated.new(root)]);
+
+  const chart = root.container.children.push(am5map.MapChart.new(root, {
+    panX: 'rotateX',
+    panY: 'rotateY',
+    projection: am5map.geoMercator()
+  }));
+
+  const maxVal = Math.max(...hunianHotel2024.map(d => d.val));
+  const minVal = Math.min(...hunianHotel2024.map(d => d.val));
+  const valMap = {};
+  hunianHotel2024.forEach(d => { valMap[d.id] = d; });
+  const fmtId = v => new Intl.NumberFormat('id-ID').format(v);
+  const isIndonesiaId = id => typeof id === 'string' && id.startsWith('ID-');
+
+  function getColor(val) {
+    // Log scale: perbedaan besar (Bali vs provinsi kecil) tetap terbaca.
+    const logMin = Math.log10(minVal);
+    const logMax = Math.log10(maxVal);
+    const t = (Math.log10(val) - logMin) / (logMax - logMin);
+    const r = Math.round(229 - t * 223);
+    const g = Math.round(245 - t * 165);
+    const b = Math.round(243 - t * 171);
+    return am5.color(`rgb(${r},${g},${b})`);
+  }
+
+  const polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+    geoJSON: am5geodata_indonesiaLow,
+    valueField: 'value'
+  }));
+
+  polygonSeries.mapPolygons.template.setAll({
+    interactive: true,
+    strokeWidth: 0.8,
+    stroke: am5.color(0x0d6b60),
+    tooltipText: '{name}\n{valueText}'
+  });
+
+  polygonSeries.mapPolygons.template.adapters.add('fill', (fill, target) => {
+    const id = target.dataItem?.get('id');
+    if (!isIndonesiaId(id)) return am5.color(0xe5f5f3);
+    const d = valMap[id];
+    return d ? getColor(d.val) : am5.color(0xd9eeeb);
+  });
+
+  polygonSeries.mapPolygons.template.adapters.add('tooltipText', (text, target) => {
+    const id = target.dataItem?.get('id');
+    if (!isIndonesiaId(id)) return '';
+    const d = valMap[id];
+    return d ? `${d.name}\n${fmtId(d.val)} hunian hotel 2024` : '{name}\nData tidak tersedia';
+  });
+
+  polygonSeries.mapPolygons.template.states.create('hover', {
+    fill: am5.color(0xe8c96a),
+    strokeWidth: 1.5,
+    stroke: am5.color(0xffffff)
+  });
+
+  polygonSeries.data.setAll(
+    hunianHotel2024.map(d => ({
+      id: d.id,
+      value: d.val,
+      valueText: `${fmtId(d.val)} hunian`
+    }))
+  );
+
+  chart.appear(1000, 100);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -315,7 +427,7 @@ makeIO('#tren',         makeTren);
 makeIO('#pandemi',      makePandemi);
 makeIO('#kebangsaan',   makeNasional);
 makeIO('#timeline',     makeMega);
-makeIO('#hotel',        makeTPK);
+makeIO('#hotel',        makeIndoMap);
 makeIO('#pola',         ()=>makeMonthly(2023));
 
 // Crash bars (Section 02)
@@ -483,7 +595,7 @@ function initDynamicPintu() {
   }
 
   function renderChart(key, initial = false) {
-    if (currentKey === key || isAnimating) return;
+    if (currentKey === key || isAnimating) return false;
     isAnimating = true;
     currentKey = key;
     const data = pintuData[key];
@@ -540,6 +652,7 @@ function initDynamicPintu() {
       .to(existingRows, { opacity: 0, y: -18, duration: .28, ease: 'power2.in', stagger: .03 })
       .to(chartLabel,   { opacity: 0, y: -10, duration: .2,  ease: 'power2.in' }, '<.05');
     }
+    return true;
   }
 
   // Klik tab
@@ -588,8 +701,9 @@ function initDynamicPintu() {
   }
 
   function renderChartWithDots(key, initial) {
-    renderChart(key, initial);
-    updateDots(key);
+    const changed = renderChart(key, initial);
+    if (changed) updateDots(key);
+    return changed;
   }
 
   // Pertama kali masuk
@@ -606,10 +720,16 @@ function initDynamicPintu() {
     if (displayedIdx === targetIdx) { stepping = false; return; }
     stepping = true;
     const direction = targetIdx > displayedIdx ? 1 : -1;
-    displayedIdx += direction;
-    renderChartWithDots(PANEL_KEYS[displayedIdx]);
-    // Tunggu animasi selesai (~700ms) baru cek lagi
-    setTimeout(stepToNext, 720);
+    const nextIdx = displayedIdx + direction;
+    const rendered = renderChartWithDots(PANEL_KEYS[nextIdx]);
+    if (!rendered) {
+      // Jika masih animasi, tunggu sebentar lalu coba step yang sama.
+      setTimeout(stepToNext, 120);
+      return;
+    }
+    displayedIdx = nextIdx;
+    // Tunggu animasi selesai lalu cek step berikutnya.
+    setTimeout(stepToNext, 760);
   }
 
   function stepTo(newIdx) {
@@ -817,13 +937,14 @@ function drawPengLines(activeIdx = null) {
 
   const wRect = wrap.getBoundingClientRect();
   const fRect = figure.getBoundingClientRect();
+  // Samakan sistem koordinat SVG dengan ukuran panel aktual
+  svg.setAttribute('viewBox', `0 0 ${wRect.width} ${wRect.height}`);
+  svg.setAttribute('width', `${wRect.width}`);
+  svg.setAttribute('height', `${wRect.height}`);
 
-  // Figure center (relative to wrap)
-const FIGURE_OFFSET_X = 20; // coba 15–30
-const FIGURE_OFFSET_Y = 0;  // biasanya tidak perlu diubah
-
-const fx = fRect.left - wRect.left + fRect.width *0.2;
-const fy = fRect.top  - wRect.top  + fRect.height / 2;
+  // Satu simpul utama tepat di tengah figur
+  const nodeX = fRect.left - wRect.left + fRect.width * 0.52;
+  const nodeY = fRect.top  - wRect.top  + fRect.height * 0.50;
 
   PENG_DATA.forEach((d, i) => {
     const card = document.getElementById(d.id);
@@ -831,39 +952,57 @@ const fy = fRect.top  - wRect.top  + fRect.height / 2;
     const cRect  = card.getBoundingClientRect();
     const isRight = d.side === 'right';
 
-    // Anchor point on card edge closest to figure
-    const cx = cRect.left - wRect.left + (isRight ? 0 : cRect.width);
+    // Anchor kiri/kanan dihitung simetris dari sisi kartu yang menghadap tengah
+    const edgeOffset = 10;
+    const cardLeft = cRect.left - wRect.left;
+    const cardRight = cardLeft + cRect.width;
+    const cx = isRight ? (cardLeft - edgeOffset) : (cardRight + edgeOffset);
     const cy = cRect.top  - wRect.top  + cRect.height / 2;
 
     const isActive  = activeIdx === i;
     const isInactive = activeIdx !== null && !isActive;
 
-    const opacity  = isInactive ? 0.15 : 0.7;
-    const strokeW  = isActive ? 2.5 : 1.5;
+    const opacity  = isInactive ? 0.15 : 0.9;
+    const strokeW  = isActive ? 2.5 : 1.7;
     const color    = d.color;
 
-    // Bezier curve
-    const cpx = (fx + cx) / 2;
+    // Kurva bersih per-sisi (menghindari kusut/silang berlebihan)
+    const dir = isRight ? 1 : -1;
+    const ctrl1X = nodeX + dir * 46;
+    const ctrl1Y = nodeY + (cy - nodeY) * 0.18;
+    const ctrl2X = cx - dir * 26;
+    const ctrl2Y = cy;
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d', `M${fx},${fy} Q${cpx},${fy} ${cpx},${cy} Q${cpx},${cy} ${cx},${cy}`);
+    path.setAttribute('d', `M${nodeX},${nodeY} C${ctrl1X},${ctrl1Y} ${ctrl2X},${ctrl2Y} ${cx},${cy}`);
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', color);
     path.setAttribute('stroke-width', strokeW);
     path.setAttribute('stroke-dasharray', isActive ? 'none' : '5,4');
     path.setAttribute('opacity', opacity);
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
     path.style.transition = 'opacity .3s';
 
     // Dot at card end
     const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
     dot.setAttribute('cx', cx);
     dot.setAttribute('cy', cy);
-    dot.setAttribute('r', isActive ? 5 : 3);
+    dot.setAttribute('r', isActive ? 5 : 4.2);
     dot.setAttribute('fill', color);
     dot.setAttribute('opacity', opacity);
 
     svg.appendChild(path);
     svg.appendChild(dot);
   });
+
+  // Marker simpul agar titik temu terlihat jelas
+  const nodeDot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  nodeDot.setAttribute('cx', nodeX);
+  nodeDot.setAttribute('cy', nodeY);
+  nodeDot.setAttribute('r', activeIdx === null ? 3 : 4);
+  nodeDot.setAttribute('fill', '#9ca3af');
+  nodeDot.setAttribute('opacity', activeIdx === null ? 0.85 : 1);
+  svg.appendChild(nodeDot);
 }
 
 /* ── Interactive: hover + click on cards ── */

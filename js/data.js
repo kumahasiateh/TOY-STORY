@@ -27,6 +27,48 @@ const tpk2024=[
   {p:'Jawa Timur',v:53.60},{p:'Banten',v:52.99},{p:'DKI Jakarta',v:53.28},{p:'Indonesia',v:52.56}
 ];
 
+/* ── HUNIAN HOTEL PER PROVINSI 2024 ── */
+const hunianHotel2024 = [
+  {id:"ID-AC", name:"Aceh", val:21550},
+  {id:"ID-SU", name:"Sumatera Utara", val:171023},
+  {id:"ID-SB", name:"Sumatera Barat", val:50021},
+  {id:"ID-RI", name:"Riau", val:30246},
+  {id:"ID-JA", name:"Jambi", val:6280},
+  {id:"ID-SS", name:"Sumatera Selatan", val:6676},
+  {id:"ID-BE", name:"Bengkulu", val:950},
+  {id:"ID-LA", name:"Lampung", val:7513},
+  {id:"ID-BB", name:"Kep. Bangka Belitung", val:6961},
+  {id:"ID-KR", name:"Kep. Riau", val:824962},
+  {id:"ID-JK", name:"DKI Jakarta", val:1287284},
+  {id:"ID-JB", name:"Jawa Barat", val:342442},
+  {id:"ID-JT", name:"Jawa Tengah", val:111054},
+  {id:"ID-YO", name:"DI Yogyakarta", val:238643},
+  {id:"ID-JI", name:"Jawa Timur", val:482687},
+  {id:"ID-BT", name:"Banten", val:291429},
+  {id:"ID-BA", name:"Bali", val:8976149},
+  {id:"ID-NB", name:"Nusa Tenggara Barat", val:722906},
+  {id:"ID-NT", name:"Nusa Tenggara Timur", val:291105},
+  {id:"ID-KB", name:"Kalimantan Barat", val:37856},
+  {id:"ID-KT", name:"Kalimantan Tengah", val:7622},
+  {id:"ID-KS", name:"Kalimantan Selatan", val:11183},
+  {id:"ID-KI", name:"Kalimantan Timur", val:21529},
+  {id:"ID-KU", name:"Kalimantan Utara", val:2327},
+  {id:"ID-SA", name:"Sulawesi Utara", val:58615},
+  {id:"ID-ST", name:"Sulawesi Tengah", val:6839},
+  {id:"ID-SN", name:"Sulawesi Selatan", val:41360},
+  {id:"ID-SG", name:"Sulawesi Tenggara", val:3499},
+  {id:"ID-GO", name:"Gorontalo", val:2678},
+  {id:"ID-SR", name:"Sulawesi Barat", val:243},
+  {id:"ID-MA", name:"Maluku", val:11167},
+  {id:"ID-MU", name:"Maluku Utara", val:2568},
+  {id:"ID-PB", name:"Papua Barat", val:808},
+  {id:"ID-PD", name:"Papua Barat Daya", val:25023},
+  {id:"ID-PA", name:"Papua", val:2214},
+  {id:"ID-PS", name:"Papua Selatan", val:716},
+  {id:"ID-PT", name:"Papua Tengah", val:8180},
+  {id:"ID-PE", name:"Papua Pegunungan", val:1265},
+];
+
 /* Chart shared configs */
 const fmt=v=>new Intl.NumberFormat('id-ID').format(Math.floor(v));
 const lTooltip={backgroundColor:'rgba(18,22,20,.93)',titleColor:'#f0ede6',bodyColor:'#5bbfb0',borderColor:'rgba(0,0,0,.12)',borderWidth:1,padding:10};
