@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pariwisata Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/indonesiaLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Pacifico&family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-dark: #1a4331;
+            --green-mid: #244f37;
+            --mint: #d1f4e6;
+            --cream: #fae8b4;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--mint);
+            -webkit-font-smoothing: antialiased;
+        }
+        .bg-gradient-custom { background: linear-gradient(180deg, #ffffff 0%, var(--mint) 55%, #c8efe0 100%); }
+        .bg-gradient-pintu { background: linear-gradient(180deg, #f0fdf4 0%, var(--mint) 100%); }
+        .bg-navy { background-color: #070b19; }
+        .text-wisatawan {
+            font-family: 'Fredoka One', cursive;
+            color: var(--green-dark);
+            font-size: clamp(3rem, 10vw, 5.5rem);
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .text-fredoka { font-family: 'Fredoka One', cursive; }
+        .text-cursive-outline {
+            font-family: 'Pacifico', cursive;
+            color: #ffeba1;
+            text-shadow: -2px -2px 0 var(--green-dark), 2px -2px 0 var(--green-dark), -2px 2px 0 var(--green-dark), 2px 2px 0 var(--green-dark), 5px 5px 0 var(--green-dark);
+        }
+        .text-cursive-green-stroke {
+            font-family: 'Pacifico', cursive;
+            color: #ffffff;
+            text-shadow: -1.5px -1.5px 0 var(--green-dark), 1.5px -1.5px 0 var(--green-dark), -1.5px 1.5px 0 var(--green-dark), 1.5px 1.5px 0 var(--green-dark), 3px 3px 0 var(--green-dark);
+        }
+        .text-pintu-outline {
+            font-family: 'Fredoka One', cursive;
+            color: var(--cream);
+            text-shadow: -1.5px -1.5px 0 var(--green-dark), 1.5px -1.5px 0 var(--green-dark), -1.5px 1.5px 0 var(--green-dark), 1.5px 1.5px 0 var(--green-dark), 3px 3px 0 var(--green-dark);
+        }
+        .text-ranking-title {
+            font-family: 'Fredoka One', cursive;
+            color: var(--cream);
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000;
+        }
+        .text-cursive-green { font-family: 'Pacifico', cursive; color: var(--green-dark); }
+        .text-cursive-light {
+            font-family: 'Pacifico', cursive;
+            color: #f8fafc;
+            text-shadow: -1.5px -1.5px 0 var(--green-dark), 1.5px -1.5px 0 var(--green-dark), -1.5px 1.5px 0 var(--green-dark), 1.5px 1.5px 0 var(--green-dark);
+        }
+        .custom-border { border: 2px solid var(--green-dark); }
+        .card-shadow { box-shadow: 6px 6px 0 rgba(26, 67, 49, 0.12); }
+        .card-shadow-lg { box-shadow: 0 20px 50px rgba(26, 67, 49, 0.12), 6px 6px 0 rgba(26, 67, 49, 0.08); }
+
+        #main-nav {
+            position: relative;
+            transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), padding 0.4s var(--ease-out);
+        }
+        #main-nav.nav-scrolled {
+            top: 0.75rem;
+            box-shadow: 0 12px 40px rgba(26, 67, 49, 0.15);
+        }
+        .nav-prog {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--green-mid), var(--cream));
+            width: 0%;
+            border-radius: 0 3px 3px 0;
+            pointer-events: none;
+        }
+        .rv-done {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .pintu-bar, .spend-bar { width: 0; }
+        .bar-fill-anim { transition: width 1.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .nav-link {
+            transition: color 0.3s var(--ease-out), background 0.35s var(--ease-out), transform 0.25s var(--ease-out);
+            border-radius: 9999px;
+            padding: 0.35rem 1.1rem;
+        }
+        .nav-link.active { background-color: var(--green-mid); color: white; }
+        .nav-link:not(.active):hover { color: #15803d; transform: translateY(-1px); }
+
+        .btn-eksplorasi {
+            background: linear-gradient(180deg, #fff5d6 0%, var(--cream) 100%);
+            color: #c02626;
+            border: 2px solid var(--green-dark);
+            transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), background 0.35s;
+            box-shadow: 0 4px 0 var(--green-dark);
+        }
+        .btn-eksplorasi:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--green-dark); background: #f1d78f; }
+        .btn-eksplorasi:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--green-dark); }
+
+        .stat-card {
+            transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out);
+        }
+        .stat-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 32px rgba(26, 67, 49, 0.18); }
+
+        .step-container { min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .narasi-card { transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
+        .narasi .narasi-card { opacity: 0.35; transform: scale(0.97); }
+        .narasi.is-active .narasi-card { opacity: 1; transform: scale(1); }
+
+        .gwc-card-shadow { box-shadow: 4px 8px 20px rgba(0,0,0,0.22); border: 1px solid rgba(0,0,0,0.06); }
+        .icon-circle {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(145deg, #6b7280, #374151);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1.25rem;
+            box-shadow: inset -2px -2px 6px rgba(0,0,0,0.35), 2px 3px 8px rgba(0,0,0,0.25);
+        }
+        .tab-btn {
+            border: 2.5px solid #000;
+            background-color: var(--cream);
+            color: #000;
+            font-family: 'Fredoka One', cursive;
+            padding: 0.6rem 2.2rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: transform 0.25s var(--ease-out), box-shadow 0.25s, background 0.3s, color 0.3s;
+            box-shadow: 3px 3px 0 #000;
+            font-size: 0.9rem;
+        }
+        .tab-btn:hover:not(.active) { transform: translateY(-2px); }
+        .tab-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+        .tab-btn.active { background-color: var(--green-dark); color: var(--cream); }
+
+        .reveal { opacity: 0; transform: translateY(40px); }
+        .reveal-left { opacity: 0; transform: translateX(-36px); }
+        .reveal-right { opacity: 0; transform: translateX(36px); }
+        .reveal-scale { opacity: 0; transform: scale(0.92); }
+
+        .globe-step > div { transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out); }
+        .globe-step > div { opacity: 0.3; transform: scale(0.96); }
+        .globe-step.is-active > div { opacity: 1; transform: scale(1); }
+
+        .belanja-stat {
+            border: 3px solid #5eead4;
+            border-radius: 1.25rem;
+            transition: transform 0.4s var(--ease-out), box-shadow 0.4s;
+        }
+        .belanja-stat:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(26, 67, 49, 0.12); }
+
+        .map-prov { transition: fill 0.5s var(--ease-out), filter 0.4s; cursor: pointer; }
+        .map-prov:hover { filter: brightness(1.08); }
+        .map-callout {
+            opacity: 0;
+            transform: translateY(12px) scale(0.96);
+            transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+        }
+        .map-callout.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+        .team-card {
+            border: 3px solid var(--green-dark);
+            border-radius: 1.75rem;
+            transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out);
+        }
+        .team-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(26, 67, 49, 0.2);
+        }
+        .team-avatar {
+            width: 88px; height: 88px;
+            background: linear-gradient(145deg, #fde047, #facc15);
+            border-radius: 50%;
+            box-shadow: inset 0 -4px 12px rgba(0,0,0,0.1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .reveal-left, .reveal-right, .reveal-scale { opacity: 1; transform: none; }
+            .lenis.lenis-smooth { scroll-behavior: smooth; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <nav id="main-nav" class="fixed top-6 left-1/2 -translate-x-1/2 flex justify-between items-center py-3 px-4 md:px-6 custom-border rounded-full bg-white/95 backdrop-blur-md max-w-6xl w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] z-[200]">
+        <a href="#home" class="flex items-center gap-2 font-bold text-green-900 text-base md:text-lg italic shrink-0">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-[#4ade80] to-[#1a4331] flex items-center justify-center text-white text-xs">🌏</span>
+            <span class="hidden sm:inline">Pariwisata Indonesia</span>
+        </a>
+        <ul class="flex gap-1 md:gap-2 text-[10px] md:text-sm font-bold text-[#1a4331] items-center flex-wrap justify-end">
+            <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+            <li><a href="#eksplorasi" class="nav-link" data-section="eksplorasi">Tren</a></li>
+            <li><a href="#sebaran-wisatawan" class="nav-link" data-section="sebaran-wisatawan">Kunjungan</a></li>
+            <li><a href="#hotel" class="nav-link" data-section="hotel">Hotel</a></li>
+            <li><a href="#tim" class="nav-link" data-section="tim">About Us</a></li>
+        </ul>
+        <div class="nav-prog" id="navProg" aria-hidden="true"></div>
+    </nav>
+
+    <section id="home" class="bg-gradient-custom min-h-screen flex flex-col relative px-6 md:px-8 pt-32 md:pt-36 pb-16">
+        <div class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center flex-grow z-10">
+            <div class="hero-left flex flex-col pl-0 md:pl-4">
+                <h1 class="text-wisatawan drop-shadow-md reveal">WISATAWAN</h1>
+                <div class="mt-2 leading-[0.85] -rotate-3 reveal">
+                    <span class="text-cursive-outline text-5xl md:text-7xl block">Manca</span>
+                    <span class="text-cursive-outline text-5xl md:text-7xl block ml-8 md:ml-16 mt-2">Negara</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 lg:-mr-8">
+                <div class="stat-card bg-[#244f37] text-white p-5 md:p-6 flex flex-col justify-center items-center text-center min-h-[140px] md:h-48 rounded-md custom-border reveal-scale">
+                    <p class="text-xs mb-2 italic opacity-90">Total Kunjungan 2025</p>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-1"><span data-count="15.39" data-decimals="2" data-suffix=" Juta">0</span></h2>
+                    <p class="text-[10px] font-light">wisatawan mancanegara</p>
+                </div>
+                <div class="stat-card bg-[#fff5f5] text-[#1a4331] custom-border p-5 md:p-6 flex flex-col justify-center items-center text-center min-h-[140px] md:h-48 rounded-md reveal-scale">
+                    <p class="text-xs mb-2 italic font-semibold">Pertumbuhan 2025</p>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-1">+<span data-count="10.8" data-decimals="1" data-suffix="%">0</span></h2>
+                    <p class="text-[10px]">dari tahun sebelumnya</p>
+                </div>
+                <div class="stat-card bg-[#fff5f5] text-[#1a4331] custom-border p-5 md:p-6 flex flex-col justify-center items-center text-center min-h-[140px] md:h-48 rounded-md reveal-scale">
+                    <p class="text-xs mb-2 italic font-semibold">Top Destinasi</p>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-1">Bali</h2>
+                    <p class="text-[10px]">pada tahun 2025</p>
+                </div>
+                <div class="stat-card bg-[#244f37] text-white p-5 md:p-6 flex flex-col justify-center items-center text-center min-h-[140px] md:h-48 rounded-md reveal-scale">
+                    <p class="text-xs mb-2 italic opacity-90">Top Negara Wisatawan</p>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-1">Malaysia</h2>
+                    <p class="text-[10px] font-light">sebanyak <span data-count="2.64" data-decimals="2" data-suffix=" Juta">0</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-4xl mx-auto text-center mt-16 md:mt-20 z-10 flex flex-col items-center hero-cta">
+            <p class="text-sm text-[#1a4331] mb-8 italic px-4 md:px-8 reveal">"Website ini menyajikan informasi interaktif mengenai perkembangan kunjungan wisatawan mancanegara ke Indonesia, mulai dari tren jumlah kedatangan, asal negara wisatawan, hingga pola kunjungan dari waktu ke waktu"</p>
+            <a href="#eksplorasi" class="btn-eksplorasi rounded-full px-10 md:px-12 py-3 text-base md:text-lg font-semibold reveal">Mulai Eksplorasi</a>
+        </div>
+    </section>
+
+    <section id="eksplorasi" class="relative flex flex-col md:flex-row bg-gradient-custom">
+        <div class="w-full md:w-[45%] flex flex-col py-16 md:py-20 px-6 md:px-8 lg:pl-24 order-2 md:order-1 items-end md:pr-10">
+            <div class="step-container narasi w-full flex items-center justify-end" data-step="1">
+                <div class="narasi-card bg-white custom-border p-8 rounded-3xl w-full max-w-sm card-shadow">
+                    <h2 class="text-2xl text-cursive-green mb-4 text-center">Fase Kunjungan All</h2>
+                    <p class="text-xs text-slate-700 leading-relaxed text-center italic">Dari 2015 hingga 2025, kunjungan wisatawan mancanegara menunjukkan pola naik-turun: tumbuh stabil sebelum pandemi, anjlok pada 2020–2021, lalu pulih bertahap menuju rekor baru.</p>
+                </div>
+            </div>
+            <div class="step-container narasi w-full flex items-center justify-end" data-step="2">
+                <div class="narasi-card bg-white custom-border p-8 rounded-3xl w-full max-w-sm card-shadow">
+                    <h2 class="text-2xl text-cursive-green mb-4 text-center">Fase Kunjungan 1</h2>
+                    <p class="text-xs text-slate-700 leading-relaxed text-center italic">Era pra-pandemi (2015–2019) mencatat pertumbuhan konsisten, dari sekitar 10,4 juta menjadi lebih dari 16 juta kunjungan per tahun.</p>
+                </div>
+            </div>
+            <div class="step-container narasi w-full flex items-center justify-end" data-step="3">
+                <div class="narasi-card bg-white custom-border p-8 rounded-3xl w-full max-w-sm card-shadow">
+                    <h2 class="text-2xl text-cursive-green mb-4 text-center">Fase Kunjungan 2</h2>
+                    <p class="text-xs text-slate-700 leading-relaxed text-center italic">Fase kebangkitan (2021–2025) memulihkan sektor pariwisata: dari titik terendah 1,5 juta kunjungan menuju 15,39 juta pada 2025.</p>
+                </div>
+            </div>
+        </div>
+        <div class="hidden md:flex flex-col justify-center items-center order-2 py-32">
+            <div class="w-1 bg-[#1a4331] h-full rounded-full reveal"></div>
+        </div>
+        <div class="w-full md:w-[52%] sticky top-0 h-[55vh] md:h-screen flex flex-col items-center justify-center p-6 md:p-8 z-10 order-1 md:order-3">
+            <h3 id="chartTitle" class="text-3xl md:text-4xl mb-6 md:mb-8 text-cursive-outline text-center">Tren Kunjungan Per Tahun</h3>
+            <div class="w-full max-w-xl bg-white p-5 md:p-6 rounded-lg card-shadow custom-border reveal-scale">
+                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-2 text-center">Kunjungan tahunan (juta)</p>
+                <div class="h-56 md:h-72 w-full"><canvas id="interactiveChart"></canvas></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sebaran-wisatawan" class="relative w-full bg-navy">
+        <div class="sticky top-0 w-full h-screen z-0">
+            <div id="globeViz" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+            <div class="absolute bottom-6 md:bottom-8 right-4 md:right-8 z-10 bg-[#162032]/90 p-4 rounded-xl custom-border text-white shadow-lg pointer-events-none">
+                <p class="text-xs font-bold mb-2 text-center">Intensitas Kunjungan</p>
+                <div class="flex items-center gap-3">
+                    <span class="text-[10px]">Rendah</span>
+                    <div class="w-24 md:w-32 h-3 rounded-full bg-gradient-to-r from-slate-300 to-[#10b981]"></div>
+                    <span class="text-[10px]">Tinggi</span>
+                </div>
+            </div>
+        </div>
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 pb-[15vh] pointer-events-none">
+            <div class="globe-step h-screen flex items-center justify-start" data-index="5">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-md pointer-events-auto">
+                    <h2 class="text-2xl md:text-3xl text-cursive-light mb-4 text-center">Darimana Mereka<br>Datang?</h2>
+                    <p class="text-sm text-slate-700 italic text-center">Peta interaktif ini menyajikan intensitas wisatawan mancanegara ke Indonesia. Semakin hijau warna suatu negara, semakin tinggi angka kunjungannya.<br><br>Terus scroll ke bawah untuk melihat Top 5.</p>
+                </div>
+            </div>
+            <div class="globe-step h-screen flex items-center justify-end" data-index="0">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-sm flex flex-col items-center text-center pointer-events-auto">
+                    <span class="bg-[#c6f6d5] border border-[#1a4331] text-[#1a4331] px-4 py-1 rounded-full text-xs font-bold mb-4 italic">Peringkat 1:</span>
+                    <h2 class="text-3xl md:text-4xl text-cursive-green mb-4">Malaysia</h2>
+                    <p class="text-sm text-slate-600 italic">Negara tetangga ini menjadi penyumbang terbesar secara dominan dengan total 2,64 Juta kunjungan wisatawan.</p>
+                </div>
+            </div>
+            <div class="globe-step h-screen flex items-center justify-end" data-index="1">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-sm flex flex-col items-center text-center pointer-events-auto">
+                    <span class="bg-[#c6f6d5] border border-[#1a4331] text-[#1a4331] px-4 py-1 rounded-full text-xs font-bold mb-4 italic">Peringkat 2:</span>
+                    <h2 class="text-3xl md:text-4xl text-cursive-green mb-4">Australia</h2>
+                    <p class="text-sm text-slate-600 italic">Pasar wisata utama yang sangat vital bagi pariwisata RI, menyumbangkan 1,75 Juta kunjungan.</p>
+                </div>
+            </div>
+            <div class="globe-step h-screen flex items-center justify-end" data-index="2">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-sm flex flex-col items-center text-center pointer-events-auto">
+                    <span class="bg-[#c6f6d5] border border-[#1a4331] text-[#1a4331] px-4 py-1 rounded-full text-xs font-bold mb-4 italic">Peringkat 3:</span>
+                    <h2 class="text-3xl md:text-4xl text-cursive-green mb-4">Singapura</h2>
+                    <p class="text-sm text-slate-600 italic">Berkat kedekatan geografis yang sangat erat, kunjungan tercatat stabil di angka 1,53 Juta kunjungan.</p>
+                </div>
+            </div>
+            <div class="globe-step h-screen flex items-center justify-end" data-index="3">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-sm flex flex-col items-center text-center pointer-events-auto">
+                    <span class="bg-[#c6f6d5] border border-[#1a4331] text-[#1a4331] px-4 py-1 rounded-full text-xs font-bold mb-4 italic">Peringkat 4:</span>
+                    <h2 class="text-3xl md:text-4xl text-cursive-green mb-4">China</h2>
+                    <p class="text-sm text-slate-600 italic">Kembali menggeliat kuat dan menunjukkan kebangkitan signifikan dengan raihan 1,34 Juta kunjungan.</p>
+                </div>
+            </div>
+            <div class="globe-step h-screen flex items-center justify-end" data-index="4">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-sm flex flex-col items-center text-center pointer-events-auto">
+                    <span class="bg-[#c6f6d5] border border-[#1a4331] text-[#1a4331] px-4 py-1 rounded-full text-xs font-bold mb-4 italic">Peringkat 5:</span>
+                    <h2 class="text-3xl md:text-4xl text-cursive-green mb-4">Timor Leste</h2>
+                    <p class="text-sm text-slate-600 italic">Melalui pergerakan turis cross-border darat, negara ini menyumbangkan 1,01 Juta kunjungan.</p>
+                </div>
+            </div>
+            <div class="globe-step h-screen flex items-center justify-start" data-index="6">
+                <div class="bg-white p-6 md:p-8 rounded-3xl custom-border card-shadow w-full max-w-md flex flex-col items-center text-center pointer-events-auto">
+                    <h2 class="text-3xl md:text-4xl text-cursive-green mb-4">Eksplorasi Global</h2>
+                    <p class="text-sm text-slate-600 italic">Klik, tahan, dan geser pada globe untuk menjelajahi intensitas kunjungan dari berbagai negara secara bebas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pintu" class="bg-gradient-pintu w-full pt-24 pb-16 px-6 md:px-8">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-10 reveal">
+                <h2 class="text-3xl md:text-5xl text-fredoka text-[#1a4331] uppercase">Jumlah Kunjungan</h2>
+                <h2 class="text-3xl md:text-5xl text-pintu-outline uppercase">Berdasarkan Pintu Masuk</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+                <div class="bg-[#4ade80] gwc-card-shadow p-8 flex flex-col items-center text-center text-white min-h-[220px] justify-center reveal-scale">
+                    <div class="icon-circle">✈️</div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-3"><span data-count="10" data-suffix=".000.000" data-decimals="0">0</span></h3>
+                    <p class="text-xs font-medium opacity-95">Mayoritas wisatawan masuk melalui bandara internasional utama di Jakarta, Bali, dan hub domestik lainnya.</p>
+                </div>
+                <div class="bg-[#38bdf8] gwc-card-shadow p-8 flex flex-col items-center text-center text-white min-h-[220px] justify-center reveal-scale">
+                    <div class="icon-circle">🚢</div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-3"><span data-count="3" data-suffix=".000.000" data-decimals="0">0</span></h3>
+                    <p class="text-xs font-medium opacity-95">Pelabuhan di Kepri dan Bali melayani wisatawan kapal pesiar serta penyeberangan dari negara tetangga.</p>
+                </div>
+                <div class="bg-[#d97706] gwc-card-shadow p-8 flex flex-col items-center text-center text-white min-h-[220px] justify-center reveal-scale">
+                    <div class="icon-circle">🚘</div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-3"><span data-count="1.5" data-suffix=".000.000" data-decimals="1">0</span></h3>
+                    <p class="text-xs font-medium opacity-95">Pos perbatasan darat—terutama di NTT dan Kalimantan—menampung turis darat lintas batas.</p>
+                </div>
+            </div>
+            <div class="flex justify-center flex-wrap gap-4 mb-12 reveal">
+                <button type="button" class="tab-btn active btn-pintu" data-pintu="udara">UDARA</button>
+                <button type="button" class="tab-btn btn-pintu" data-pintu="laut">LAUT</button>
+                <button type="button" class="tab-btn btn-pintu" data-pintu="darat">DARAT</button>
+            </div>
+            <div class="bg-white p-6 md:p-12 custom-border card-shadow reveal">
+                <h3 id="ranking-title" class="text-lg md:text-2xl text-ranking-title uppercase mb-4">Ranking Pintu Udara Tahun 2025</h3>
+                <hr class="border-t-2 border-[#1a4331] mb-8">
+                <div id="ranking-list" class="flex flex-col gap-5"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bulan" class="bg-[#d1f4e6] w-full py-20 px-6 md:px-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-12 reveal">
+                <h2 class="text-3xl md:text-5xl text-fredoka text-[#1a4331] uppercase">Pada Bulan Apa Kunjungan</h2>
+                <h2 class="text-3xl md:text-5xl text-pintu-outline uppercase">Paling Tinggi ??</h2>
+            </div>
+            <div class="flex flex-col md:flex-row items-stretch gap-8">
+                <div class="w-full md:w-3/5 flex flex-col reveal-left">
+                    <div class="bg-white p-5 md:p-6 rounded-lg card-shadow custom-border mb-8">
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-2">Kunjungan tahunan 2021–2025 (juta)</p>
+                        <div class="h-56 md:h-72"><canvas id="monthlyChart"></canvas></div>
+                    </div>
+                    <div class="flex justify-center md:justify-start flex-wrap gap-4">
+                        <button type="button" class="tab-btn btn-bulan" data-year="2023">2023</button>
+                        <button type="button" class="tab-btn btn-bulan" data-year="2024">2024</button>
+                        <button type="button" class="tab-btn btn-bulan active" data-year="2025">2025</button>
+                    </div>
+                </div>
+                <div class="hidden md:flex justify-center px-2"><div class="w-[3px] bg-[#1a4331] rounded-full"></div></div>
+                <div class="w-full md:w-2/5 flex flex-col justify-center gap-10 reveal-right">
+                    <div class="text-center">
+                        <h3 id="bulan-peak-title" class="text-3xl md:text-4xl text-cursive-green-stroke mb-4">Puncak Agustus 2025</h3>
+                        <p id="bulan-peak-desc" class="text-sm text-slate-700 italic leading-relaxed px-2">Pada tahun 2025, kunjungan tertinggi tercatat di bulan Agustus mencapai 1,9 juta wisatawan—bertepatan dengan musim liburan dan event internasional.</p>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-3xl md:text-4xl text-cursive-green-stroke mb-4">Narasi Line Chart</h3>
+                        <p class="text-sm text-slate-700 italic leading-relaxed px-2">Pola bulanan menunjukkan puncak di pertengahan tahun dan penutupan kuat di Desember, mengindikasikan ketergantungan pada musim liburan global.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demografi" class="bg-[#d1f4e6] w-full pt-12 pb-28 px-6 md:px-8 border-t border-[#82a488]/30">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
+            <div class="w-full md:w-1/2 flex flex-col items-center md:items-start reveal-left">
+                <p class="text-xs text-slate-600 mb-4 font-medium italic md:ml-8">Klik segmen untuk sorot data</p>
+                <div class="relative w-64 h-64 md:w-80 md:h-80"><canvas id="donutChart"></canvas></div>
+                <div id="donutLegend" class="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-2 mt-8 text-xs font-semibold text-gray-800 md:ml-8"></div>
+            </div>
+            <div class="w-full md:w-1/2 flex flex-col items-center md:items-end reveal-right">
+                <div class="text-center md:text-right mb-10 w-full">
+                    <div class="flex flex-wrap justify-center md:justify-end items-end gap-2 mb-2">
+                        <h2 class="text-3xl md:text-5xl text-fredoka text-[#1a4331] uppercase">Siapa Saja Yang</h2>
+                        <h2 class="text-3xl md:text-5xl text-pintu-outline uppercase">Berkunjung ??</h2>
+                    </div>
+                    <p class="text-sm font-bold text-slate-800">Profil Wisatawan Mancanegara Berdasarkan Kelompok Generasi 2024</p>
+                </div>
+                <div class="text-center md:text-right max-w-md mt-4 md:mt-16">
+                    <h3 id="demografi-title" class="text-2xl md:text-4xl text-cursive-green-stroke mb-5">Tertinggi 45% di Kategori Milenial</h3>
+                    <p id="demografi-desc" class="text-sm text-slate-700 italic leading-relaxed">Data memperlihatkan bahwa generasi Milenial sangat mendominasi angka kunjungan wisatawan ke Indonesia. Karakteristik perjalanan mereka umumnya mencari pengalaman budaya yang otentik dan destinasi yang ramah lingkungan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="belanja" class="bg-gradient-custom w-full py-20 px-6 md:px-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-12 reveal">
+                <h2 class="text-3xl md:text-5xl text-fredoka text-[#1a4331] uppercase">Berapa Yang Mereka</h2>
+                <h2 class="text-3xl md:text-5xl text-pintu-outline uppercase">Belanjakan ??</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+                <div class="belanja-stat bg-white p-8 text-center reveal-scale">
+                    <p class="text-cursive-green text-lg mb-3">Sebelum Pandemi — 2019</p>
+                    <p class="text-3xl md:text-4xl font-bold text-[#1a4331]">US$ <span data-count="1146" data-decimals="0">0</span></p>
+                    <p class="text-[10px] text-slate-500 mt-2">rata-rata per kunjungan</p>
+                </div>
+                <div class="belanja-stat bg-white p-8 text-center reveal-scale">
+                    <p class="text-cursive-green text-lg mb-3">Puncak Pandemi 2020</p>
+                    <p class="text-3xl md:text-4xl font-bold text-[#1a4331]">US$ <span data-count="3097" data-decimals="0">0</span></p>
+                    <p class="text-[10px] text-slate-500 mt-2">rata-rata per kunjungan</p>
+                </div>
+                <div class="belanja-stat bg-white p-8 text-center reveal-scale">
+                    <p class="text-cursive-green text-lg mb-3">Terkini 2024</p>
+                    <p class="text-3xl md:text-4xl font-bold text-[#1a4331]">US$ <span data-count="1392" data-decimals="0">0</span></p>
+                    <p class="text-[10px] text-slate-500 mt-2">rata-rata per kunjungan</p>
+                </div>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-10 items-stretch">
+                <div class="lg:w-1/2 bg-white p-5 md:p-6 custom-border card-shadow rounded-xl reveal-left">
+                    <div class="h-64 md:h-72"><canvas id="spendingChart"></canvas></div>
+                </div>
+                <div class="lg:w-1/2 flex flex-col gap-6 reveal-right">
+                    <div class="bg-white p-6 rounded-2xl custom-border card-shadow">
+                        <p class="text-sm text-slate-700 italic leading-relaxed">Pandemi menyaring hanya wisatawan berdaya beli tinggi sehingga pengeluaran meroket 3× lipat meski jumlah kunjungan anjlok drastis. Setelah pemulihan, rata-rata belanja normal kembali mendekati tren pra-pandemi.</p>
+                    </div>
+                    <div class="bg-white p-6 md:p-8 custom-border card-shadow rounded-xl">
+                        <h3 class="text-lg md:text-xl text-pintu-outline uppercase mb-3">Kebangsaan Pengeluaran Tertinggi 2024</h3>
+                        <hr class="border-[#1a4331] mb-5">
+                        <div id="spending-rank-list" class="flex flex-col gap-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hotel" class="bg-[#e8fdf5] w-full py-20 px-6 md:px-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-12 text-center md:text-left reveal">
+            <h2 class="text-3xl md:text-5xl text-fredoka text-[#1a4331] uppercase">Tingkat Penghunian</h2>
+            <h2 class="text-3xl md:text-5xl text-pintu-outline uppercase">Kamar Hotel</h2>
+        </div>
+        
+        <div class="relative max-w-4xl mx-auto reveal-scale" id="map-container">
+            
+            <div id="indo_map_div" style="width: 100%; height: 520px; z-index: 10;"></div>
+            
+            <div class="map-callout visible absolute top-[8%] left-[22%] md:left-[28%] max-w-[200px] bg-white p-3 rounded-xl custom-border text-xs italic shadow-lg z-20 pointer-events-none" data-for="kepri">
+                Kepri menjadi provinsi dengan tingkat hunian kamar tertinggi kedua karena dominasi wisata bahari dan kunjungan dari Singapura-Malaysia.
+            </div>
+            <div class="map-callout absolute bottom-[12%] right-[18%] md:right-[22%] max-w-[200px] bg-white p-3 rounded-xl custom-border text-xs italic shadow-lg z-20 pointer-events-none" data-for="bali">
+                Bali menjadi provinsi dengan tingkat hunian kamar tertinggi karena konsentrasi resor internasional dan event wisata sepanjang tahun.
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+    <section id="tim" class="bg-gradient-pintu w-full py-24 px-6 md:px-8">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="mb-14 reveal">
+                <h2 class="text-3xl md:text-5xl text-fredoka text-[#1a4331] uppercase">Tim Pengembang</h2>
+                <p class="text-base md:text-lg font-semibold text-slate-800 mt-3">Siapakah yang Membuat Webstory Ini?</p>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 md:gap-6">
+                <article class="team-card bg-white p-6 flex flex-col items-center reveal-scale">
+                    <div class="team-avatar mb-5"></div>
+                    <h3 class="text-2xl text-cursive-green mb-2">Dena</h3>
+                    <p class="text-[11px] text-slate-600">Pengembang</p>
+                </article>
+                <article class="team-card bg-white p-6 flex flex-col items-center reveal-scale">
+                    <div class="team-avatar mb-5"></div>
+                    <h3 class="text-2xl text-cursive-green mb-2">Nuzul</h3>
+                    <p class="text-[11px] text-slate-600">Pengembang</p>
+                </article>
+                <article class="team-card bg-white p-6 flex flex-col items-center reveal-scale">
+                    <div class="team-avatar mb-5"></div>
+                    <h3 class="text-2xl text-cursive-green mb-2">Syairra</h3>
+                    <p class="text-[11px] text-slate-600">Pengembang</p>
+                </article>
+                <article class="team-card bg-white p-6 flex flex-col items-center reveal-scale">
+                    <div class="team-avatar mb-5"></div>
+                    <h3 class="text-2xl text-cursive-green mb-2">Azka</h3>
+                    <p class="text-[11px] text-slate-600">Pengembang</p>
+                </article>
+                <article class="team-card bg-white p-6 flex flex-col items-center reveal-scale col-span-2 sm:col-span-1 mx-auto w-full max-w-[200px] lg:max-w-none">
+                    <div class="team-avatar mb-5"></div>
+                    <h3 class="text-2xl text-cursive-green mb-2">Zaid</h3>
+                    <p class="text-[11px] text-slate-600">Pengembang</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#070b19] text-center py-8 text-slate-400 text-sm">
+        &copy; 2025 Dashboard Pariwisata Indonesia — Webstory Pariwisata
+    </footer>
+
+    <script>
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const EASE_BAR = 'cubic-bezier(0.16, 1, 0.3, 1)';
+        const CHART_ANIM = { duration: prefersReducedMotion ? 0 : 1200, easing: 'easeOutCubic' };
+
+        // ——— Lenis + GSAP scroll sync (wisata-webstory pattern) ———
+        let lenis;
+        if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
+            document.documentElement.classList.add('lenis', 'lenis-smooth');
+            lenis = new Lenis({
+                duration: 1.15,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true,
+                touchMultiplier: 1.8,
+            });
+            function lenisRaf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(lenisRaf);
+            }
+            requestAnimationFrame(lenisRaf);
+        }
+
+        function makeIO(selector, callback, threshold = 0.15) {
+            const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+            if (!el) return;
+            let fired = false;
+            const io = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !fired) {
+                    fired = true;
+                    callback();
+                    io.disconnect();
+                }
+            }, { threshold, rootMargin: '0px 0px -5% 0px' });
+            io.observe(el);
+        }
+
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !prefersReducedMotion) {
+            gsap.registerPlugin(ScrollTrigger);
+
+            if (lenis) {
+                lenis.on('scroll', ScrollTrigger.update);
+                ScrollTrigger.scrollerProxy(document.documentElement, {
+                    scrollTop(value) {
+                        if (arguments.length) lenis.scrollTo(value, { immediate: true });
+                        return lenis.scroll;
+                    },
+                    getBoundingClientRect() {
+                        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+                    },
+                });
+                ScrollTrigger.addEventListener('refresh', () => lenis.resize());
+            }
+
+            // Hero entrance timeline (adapted from wisata-webstory)
+            const heroTl = gsap.timeline({ delay: 0.25 });
+            heroTl
+                .from('#main-nav', { opacity: 0, y: -22, duration: 0.75, ease: 'power3.out' })
+                .from('.hero-left .text-wisatawan', { opacity: 0, y: 28, duration: 0.85, ease: 'power3.out' }, '-=0.35')
+                .from('.hero-left .mt-2 span', { opacity: 0, y: 24, stagger: 0.12, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+                .from('.stat-card', { opacity: 0, y: 36, scale: 0.94, stagger: 0.08, duration: 0.75, ease: 'power3.out' }, '-=0.45')
+                .from('.hero-cta .reveal, .hero-cta a', { opacity: 0, y: 22, stagger: 0.1, duration: 0.7, ease: 'power3.out' }, '-=0.35');
+
+            // Scroll reveals — rv / rv-r / rv-l mapping
+            const rvMap = {
+                'reveal': { x: 0, y: 40 },
+                'reveal-left': { x: -50, y: 0 },
+                'reveal-right': { x: 50, y: 0 },
+                'reveal-scale': { x: 0, y: 40, scale: 0.92 },
+            };
+            Object.keys(rvMap).forEach((cls) => {
+                gsap.utils.toArray('.' + cls).forEach((el) => {
+                    if (el.closest('#home')) return;
+                    const m = rvMap[cls];
+                    gsap.fromTo(el,
+                        { opacity: 0, x: m.x, y: m.y, scale: m.scale || 1 },
+                        {
+                            opacity: 1, x: 0, y: 0, scale: 1,
+                            duration: 0.85,
+                            ease: 'power3.out',
+                            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+                        }
+                    );
+                });
+            });
+
+            // Fallback jika scroll cepat — dari wisata-webstory
+            (function initRvFallback() {
+                const sel = '.reveal, .reveal-left, .reveal-right, .reveal-scale';
+                const rvIO = new IntersectionObserver((entries) => {
+                    entries.forEach((e) => {
+                        if (!e.isIntersecting) return;
+                        const el = e.target;
+                        setTimeout(() => {
+                            if (parseFloat(getComputedStyle(el).opacity) < 0.1) el.classList.add('rv-done');
+                        }, 200);
+                        rvIO.unobserve(el);
+                    });
+                }, { threshold: 0.05, rootMargin: '0px 0px -3% 0px' });
+                document.querySelectorAll(sel).forEach((el) => { if (!el.closest('#home')) rvIO.observe(el); });
+
+                let st;
+                window.addEventListener('scroll', () => {
+                    clearTimeout(st);
+                    st = setTimeout(() => {
+                        document.querySelectorAll(sel).forEach((el) => {
+                            const r = el.getBoundingClientRect();
+                            if (r.top < window.innerHeight * 1.1 && r.bottom > -50 && parseFloat(getComputedStyle(el).opacity) < 0.1) {
+                                el.classList.add('rv-done');
+                            }
+                        });
+                    }, 250);
+                }, { passive: true });
+            })();
+        } else {
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach((el) => {
+                el.style.opacity = '1';
+                el.style.transform = 'none';
+            });
+        }
+
+        // Nav scroll, progress bar, active section
+        const mainNav = document.getElementById('main-nav');
+        const navProg = document.getElementById('navProg');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = ['home', 'eksplorasi', 'sebaran-wisatawan', 'pintu', 'bulan', 'demografi', 'belanja', 'hotel', 'tim'];
+
+        function setActiveNav(id) {
+            navLinks.forEach((link) => {
+                link.classList.toggle('active', link.dataset.section === id);
+            });
+        }
+
+        const sectionEls = sections.map((id) => document.getElementById(id)).filter(Boolean);
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) setActiveNav(entry.target.id);
+            });
+        }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+        sectionEls.forEach((el) => navObserver.observe(el));
+
+        function onScrollNav() {
+            const scrollY = lenis ? lenis.scroll : window.scrollY;
+            mainNav.classList.toggle('nav-scrolled', scrollY > 80);
+            if (navProg) {
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                navProg.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+            }
+        }
+        window.addEventListener('scroll', onScrollNav, { passive: true });
+        if (lenis) lenis.on('scroll', onScrollNav);
+
+        navLinks.forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (!target) return;
+                if (lenis) lenis.scrollTo(target, { offset: -100, duration: 1.4 });
+                else target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        function animateCount(el) {
+            if (el.dataset.animated) return;
+            el.dataset.animated = '1';
+            const end = parseFloat(el.dataset.count);
+            const decimals = parseInt(el.dataset.decimals || '0', 10);
+            const suffix = el.dataset.suffix || '';
+            const duration = 2000;
+            const start = performance.now();
+            function frame(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - p, 5);
+                const val = end * ease;
+                el.textContent = (decimals ? val.toFixed(decimals) : Math.round(val).toLocaleString('id-ID')) + suffix;
+                if (p < 1) requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+        }
+
+        makeIO('#home', () => document.querySelectorAll('#home [data-count]').forEach(animateCount), 0.2);
+        makeIO('#pintu', () => document.querySelectorAll('#pintu [data-count]').forEach(animateCount), 0.15);
+        makeIO('#belanja', () => document.querySelectorAll('#belanja [data-count]').forEach(animateCount), 0.15);
+
+        function fadeText(id, text) {
+            const el = document.getElementById(id);
+            if (!el || prefersReducedMotion) { if (el) el.textContent = text; return; }
+            gsap.to(el, {
+                opacity: 0, y: 8, duration: 0.2, ease: 'power2.in',
+                onComplete: () => {
+                    el.textContent = text;
+                    gsap.to(el, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+                },
+            });
+        }
+
+        // ——— Charts ———
+        Chart.defaults.font.family = "'Poppins', sans-serif";
+        Chart.defaults.animation = CHART_ANIM;
+
+        const data1 = { labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'], data: [10.4, 11.5, 14.0, 15.8, 16.1, 4.0, 1.5, 5.4, 11.6, 13.9, 15.39], title: 'Tren Keseluruhan (2015–2025)' };
+        const data2 = { labels: ['2015','2016','2017','2018','2019'], data: [10.4, 11.5, 14.0, 15.8, 16.1], title: 'Tren Masa Pre-COVID' };
+        const data3 = { labels: ['2021','2022','2023','2024','2025'], data: [1.5, 5.4, 11.6, 13.9, 15.39], title: 'Tren Fase Kebangkitan' };
+
+        const chartTitle = document.getElementById('chartTitle');
+        const myChart = new Chart(document.getElementById('interactiveChart'), {
+            type: 'line',
+            data: {
+                labels: data1.labels,
+                datasets: [{
+                    data: data1.data,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                },
+                animation: CHART_ANIM
+            }
+        });
+
+        function updateChart(step) {
+            const selected = step === '2' ? data2 : step === '3' ? data3 : data1;
+            if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+                gsap.to(chartTitle, { opacity: 0, y: -10, duration: 0.22, ease: 'power2.in', onComplete: () => {
+                    chartTitle.textContent = selected.title;
+                    gsap.to(chartTitle, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+                }});
+            } else chartTitle.textContent = selected.title;
+            myChart.data.labels = selected.labels;
+            myChart.data.datasets[0].data = selected.data;
+            myChart.update();
+        }
+
+        document.querySelectorAll('.narasi').forEach(section => {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    document.querySelectorAll('.narasi').forEach(n => n.classList.remove('is-active'));
+                    entry.target.classList.add('is-active');
+                    const card = entry.target.querySelector('.narasi-card');
+                    if (card && !prefersReducedMotion && typeof gsap !== 'undefined') {
+                        gsap.fromTo(card, { scale: 0.96, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.55, ease: 'power3.out' });
+                    }
+                    updateChart(entry.target.dataset.step);
+                });
+            }, { threshold: 0.55 });
+            obs.observe(section);
+        });
+        document.querySelector('.narasi')?.classList.add('is-active');
+
+        // Globe
+        const touristData = {
+            "Australia": 1754791, "China": 1344074, "East Timor": 1009181,
+            "Malaysia": 2639749, "Singapore": 1526438
+        };
+        function getChoroplethColor(val) {
+            if (!val) return 'rgba(148, 163, 184, 0.2)';
+            const ratio = Math.pow(val / 2639749, 0.4);
+            const r = Math.round(200 - ratio * 180);
+            const g = Math.round(220 - ratio * 50);
+            const b = Math.round(200 - ratio * 150);
+            return `rgba(${r}, ${g}, ${b}, 0.9)`;
+        }
+        const top5CountriesInfo = [
+            { rank: 1, name: 'Malaysia', lat: 4.2105, lng: 101.9758, textAlt: 0.15 },
+            { rank: 2, name: 'Australia', lat: -25.2744, lng: 133.7751, textAlt: 0.12 },
+            { rank: 3, name: 'Singapura', lat: 1.3521, lng: 103.8198, textAlt: 0.08 },
+            { rank: 4, name: 'China', lat: 35.8617, lng: 104.1954, textAlt: 0.12 },
+            { rank: 5, name: 'Timor Leste', lat: -8.8742, lng: 125.7275, textAlt: 0.12 }
+        ];
+        const world = Globe()(document.getElementById('globeViz'))
+            .showAtmosphere(true)
+            .atmosphereColor('#3b82f6')
+            .atmosphereAltitude(0.15)
+            .pointOfView({ lat: 0, lng: 115, altitude: 2.5 })
+            .labelsData(top5CountriesInfo)
+            .labelLat(d => d.lat)
+            .labelLng(d => d.lng)
+            .labelText(d => `${d.rank}. ${d.name}`)
+            .labelSize(2)
+            .labelDotRadius(1)
+            .labelColor(() => '#fbbf24')
+            .labelResolution(2)
+            .labelAltitude(d => d.textAlt);
+        world.globeMaterial().color.set('#1e3a8a');
+        world.globeMaterial().roughness = 0.8;
+        fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+            .then(res => res.json())
+            .then(countries => {
+                world.polygonsData(countries.features)
+                    .polygonAltitude(0.015)
+                    .polygonCapColor(d => getChoroplethColor(touristData[d.properties.ADMIN]))
+                    .polygonSideColor(() => 'rgba(0, 0, 0, 0.2)')
+                    .polygonStrokeColor(() => '#475569')
+                    .polygonsTransitionDuration(400);
+            });
+        world.controls().enableZoom = false;
+
+        document.querySelectorAll('.globe-step').forEach(step => {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    document.querySelectorAll('.globe-step').forEach(s => s.classList.remove('is-active'));
+                    entry.target.classList.add('is-active');
+                    const card = entry.target.querySelector(':scope > div');
+                    if (card && !prefersReducedMotion && typeof gsap !== 'undefined') {
+                        gsap.fromTo(card, { opacity: 0.4, y: 24, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power3.out' });
+                    }
+                    const index = parseInt(entry.target.dataset.index, 10);
+                    if (index < 5) {
+                        world.controls().enableZoom = false;
+                        const c = top5CountriesInfo[index];
+                        if (c) world.pointOfView({ lat: c.lat, lng: c.lng, altitude: 0.6 }, 1200);
+                    } else if (index === 5) {
+                        world.controls().enableZoom = false;
+                        world.pointOfView({ lat: 0, lng: 115, altitude: 2.2 }, 2000);
+                    } else if (index === 6) {
+                        world.controls().enableZoom = true;
+                        world.pointOfView({ lat: 0, lng: 115, altitude: 2.5 }, 2000);
+                    }
+                });
+            }, { rootMargin: '-18% 0px -18% 0px', threshold: 0.45 });
+            obs.observe(step);
+        });
+
+        // Pintu masuk
+        const pintuData = {
+            udara: [
+                { nama: 'Soekarno-Hatta (Jakarta)', nilai: '3.5 Juta', width: '90%' },
+                { nama: 'Ngurah Rai (Bali)', nilai: '3.2 Juta', width: '85%' },
+                { nama: 'Juanda (Surabaya)', nilai: '1.1 Juta', width: '60%' },
+                { nama: 'Kualanamu (Medan)', nilai: '850 Ribu', width: '45%' },
+                { nama: 'Hasanuddin (Makassar)', nilai: '400 Ribu', width: '25%' }
+            ],
+            laut: [
+                { nama: 'Batam Center (Batam)', nilai: '1.2 Juta', width: '85%' },
+                { nama: 'Tanjung Uban (Bintan)', nilai: '800 Ribu', width: '65%' },
+                { nama: 'Tanjung Benoa (Bali)', nilai: '450 Ribu', width: '40%' },
+                { nama: 'Belawan (Medan)', nilai: '300 Ribu', width: '30%' },
+                { nama: 'Tanjung Priok (Jakarta)', nilai: '150 Ribu', width: '15%' }
+            ],
+            darat: [
+                { nama: 'Atambua (NTT)', nilai: '479 Ribu', width: '90%' },
+                { nama: 'Entikong (Kalbar)', nilai: '350 Ribu', width: '70%' },
+                { nama: 'Aruk (Kalbar)', nilai: '280 Ribu', width: '55%' },
+                { nama: 'Nanga Badau (Kalbar)', nilai: '210 Ribu', width: '40%' },
+                { nama: 'Skouw (Papua)', nilai: '150 Ribu', width: '25%' }
+            ]
+        };
+
+        const rankingTitle = document.getElementById('ranking-title');
+        const rankingList = document.getElementById('ranking-list');
+        let pintuAnimating = false;
+
+        function animatePintuBars(container) {
+            container.querySelectorAll('.pintu-bar').forEach((bar) => {
+                if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+                    gsap.to(bar, { width: bar.dataset.w, duration: 0.9, ease: 'power3.out' });
+                } else bar.style.width = bar.dataset.w;
+            });
+        }
+
+        
+        function buildPintuRows(tipe) {
+            rankingList.innerHTML = '';
+            pintuData[tipe].forEach((item, i) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-3 text-[#1a4331] font-semibold text-sm md:text-base pintu-row';
+                const barCls = i === 0 ? 'bg-[#1a4331]' : 'bg-[#598460]';
+                row.innerHTML = '<div class="w-[32%] shrink-0">' + item.nama + '</div><div class="flex-1 px-1"><div class="bg-[#82a488] h-7 rounded-full overflow-hidden"><div class="pintu-bar h-full rounded-full ' + barCls + '" style="width:0" data-w="' + item.width + '"></div></div></div><div class="w-[18%] text-right shrink-0">' + item.nilai + '</div>';
+                rankingList.appendChild(row);
+            });
+            return rankingList.querySelectorAll('.pintu-row');
+        }
+
+        function renderPintu(tipe, initial) {
+            if (pintuAnimating) return;
+            initial = !!initial;
+            const label = 'Ranking Pintu ' + tipe.charAt(0).toUpperCase() + tipe.slice(1) + ' Tahun 2025';
+            const existing = rankingList.querySelectorAll('.pintu-row');
+
+            function finishBuild() {
+                rankingTitle.textContent = label;
+                const rows = buildPintuRows(tipe);
+                if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+                    gsap.fromTo(rankingTitle, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+                    gsap.fromTo(rows, { opacity: 0, y: 28 }, {
+                        opacity: 1, y: 0, duration: 0.55, ease: 'power3.out', stagger: 0.06,
+                        onComplete: function() { animatePintuBars(rankingList); pintuAnimating = false; },
+                    });
+                } else {
+                    animatePintuBars(rankingList);
+                    pintuAnimating = false;
+                }
+            }
+
+            if (initial || !existing.length) {
+                pintuAnimating = true;
+                finishBuild();
+                return;
+            }
+
+            pintuAnimating = true;
+            if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+                gsap.timeline({ onComplete: finishBuild })
+                    .to(existing, { opacity: 0, y: -16, duration: 0.28, ease: 'power2.in', stagger: 0.03 })
+                    .to(rankingTitle, { opacity: 0, y: -8, duration: 0.2, ease: 'power2.in' }, '<0.05');
+            } else {
+                finishBuild();
+            }
+        }
+
+        document.querySelectorAll('.btn-pintu').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.btn-pintu').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                renderPintu(btn.dataset.pintu);
+            });
+        });
+        renderPintu('udara', true);
+
+        // Bulan
+        const monthlyData = {
+            '2023': { data: [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.2, 1.1, 1.0, 1.1, 1.0, 1.2], peak: 'Juli 2023', peakDesc: 'Puncak Juli 2023 dengan 1,2 juta kunjungan—pertumbuhan awal pasca pembukaan perjalanan.' },
+            '2024': { data: [0.9, 1.0, 1.1, 1.1, 1.2, 1.3, 1.4, 1.3, 1.2, 1.3, 1.2, 1.4], peak: 'Juli 2024', peakDesc: 'Juli 2024 mencatat 1,4 juta kunjungan, menandai akselerasi pemulihan pariwisata.' },
+            '2025': { data: [1.1, 1.4, 1.7, 1.2, 1.45, 1.2, 1.26, 1.9, 1.1, 1.23, 1.1, 1.8], peak: 'Agustus 2025', peakDesc: 'Pada tahun 2025, kunjungan tertinggi di Agustus (1,9 juta)—musim liburan global dan event wisata.' }
+        };
+        const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'],
+                datasets: [{
+                    data: monthlyData['2025'].data,
+                    borderColor: '#1a4331',
+                    backgroundColor: 'rgba(26, 67, 49, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#1a4331',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+        document.querySelectorAll('.btn-bulan').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.btn-bulan').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const y = btn.dataset.year;
+                monthlyChart.data.datasets[0].data = monthlyData[y].data;
+                monthlyChart.update();
+                fadeText('bulan-peak-title', 'Puncak ' + monthlyData[y].peak);
+                fadeText('bulan-peak-desc', monthlyData[y].peakDesc);
+            });
+        });
+
+        // Demografi
+        const dData = {
+            labels: ['Milenial', 'Gen Z', 'Gen X', 'Baby Boomer', 'Lainnya'],
+            percentages: [45, 25, 15, 10, 5],
+            colors: ['#1a4331', '#ef4444', '#facc15', '#4ade80', '#3b82f6'],
+            narratives: [
+                'Data memperlihatkan bahwa generasi Milenial sangat mendominasi angka kunjungan wisatawan ke Indonesia. Karakteristik perjalanan mereka umumnya mencari pengalaman budaya yang otentik dan destinasi yang ramah lingkungan.',
+                'Generasi Z menempati posisi kedua. Mereka sangat terpengaruh oleh tren media sosial dan cenderung lebih menyukai wisata petualangan alam terbuka yang estetik.',
+                'Kunjungan dari Generasi X cenderung stabil. Fokus utama mereka adalah liburan keluarga atau perjalanan relaksasi dengan akomodasi nyaman.',
+                'Kelompok Baby Boomer menyumbang angka yang lebih sedikit. Mereka umumnya lebih menyukai paket wisata sejarah dan perjalanan santai premium.',
+                'Kategori lainnya merangkum kelompok yang belum terklasifikasi, dengan pola perjalanan yang lebih sporadis.'
+            ]
+        };
+        function setDemografi(i) {
+            fadeText('demografi-title', 'Tertinggi ' + dData.percentages[i] + '% di Kategori ' + dData.labels[i]);
+            fadeText('demografi-desc', dData.narratives[i]);
+        }
+        const centerTextPlugin = {
+            id: 'centerText',
+            beforeDraw(chart) {
+                if (chart.config.type !== 'doughnut') return;
+                const { ctx, width, height } = chart;
+                ctx.save();
+                ctx.font = `bold ${(height / 200).toFixed(2)}em Poppins`;
+                ctx.fillStyle = '#1e293b';
+                ctx.textBaseline = 'middle';
+                const text = 'Profil';
+                ctx.fillText(text, (width - ctx.measureText(text).width) / 2, height / 2);
+                ctx.restore();
+            }
+        };
+        new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: dData.labels,
+                datasets: [{ data: dData.percentages, backgroundColor: dData.colors, borderWidth: 0, hoverOffset: 12 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: { legend: { display: false } },
+                onClick: (_, els) => { if (els.length) setDemografi(els[0].index); }
+            },
+            plugins: [centerTextPlugin]
+        });
+        const legendContainer = document.getElementById('donutLegend');
+        dData.labels.forEach((label, i) => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'flex items-center gap-2 hover:opacity-70 transition-opacity';
+            item.innerHTML = `<span class="w-3 h-3 rounded-full" style="background:${dData.colors[i]}"></span><span>${label}</span>`;
+            item.onclick = () => setDemografi(i);
+            legendContainer.appendChild(item);
+        });
+
+        // Belanja chart
+        new Chart(document.getElementById('spendingChart'), {
+            type: 'line',
+            data: {
+                labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'],
+                datasets: [{
+                    data: [950, 980, 1020, 1080, 1146, 3097, 2800, 2100, 1650, 1392],
+                    borderColor: '#14b8a6',
+                    backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.45,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#facc15',
+                    pointBorderColor: '#14b8a6',
+                    pointBorderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: { callback: v => 'US$' + v },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+        const spendingRank = [
+            { negara: 'Swiss', nilai: 'US$ 2.194', w: '100%' },
+            { negara: 'US', nilai: 'US$ 2.184', w: '98%' },
+            { negara: 'Austria', nilai: 'US$ 2.176', w: '96%' },
+        ];
+        const spendList = document.getElementById('spending-rank-list');
+        spendingRank.forEach((item, i) => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-3 text-sm font-semibold text-[#1a4331]';
+            row.innerHTML = `
+                <span class="w-24 shrink-0">${item.negara}</span>
+                <div class="flex-1 bg-[#c8e6c9] h-6 rounded-full overflow-hidden">
+                    <div class="spend-bar h-full rounded-full ${i === 0 ? 'bg-[#1a4331]' : 'bg-[#598460]'}" style="width:0" data-w="${item.w}"></div>
+                </div>
+                <span class="shrink-0">${item.nilai}</span>`;
+            spendList.appendChild(row);
+        });
+        makeIO('#belanja', function() {
+            spendList.querySelectorAll('.spend-bar').forEach(function(b) {
+                if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+                    gsap.to(b, { width: b.dataset.w, duration: 1.1, ease: 'power3.out' });
+                } else {
+                    b.style.width = b.dataset.w;
+                }
+            });
+        }, 0.15);
+
+        // Hotel map interaction
+        const callouts = document.querySelectorAll('.map-callout');
+        document.querySelectorAll('.map-prov[data-highlight]').forEach(path => {
+            path.addEventListener('mouseenter', () => {
+                callouts.forEach(c => c.classList.remove('visible'));
+                const id = path.dataset.prov;
+                document.querySelector(`.map-callout[data-for="${id}"]`)?.classList.add('visible');
+            });
+        });
+        document.getElementById('map-container')?.addEventListener('mouseleave', () => {
+            callouts.forEach(c => c.classList.toggle('visible', c.dataset.for === 'kepri'));
+        });
+
+        window.addEventListener('resize', () => {
+            world.width(window.innerWidth).height(window.innerHeight);
+            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+        });
+
+        window.addEventListener('load', () => {
+            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+        });
+    </script>
+<script>
+// 1. Data Hunian Hotel 2024 (dari data.js)
+const hunianHotel2024 = [
+  {id:"ID-AC", name:"Aceh", val:21550}, {id:"ID-SU", name:"Sumatera Utara", val:171023},
+  {id:"ID-SB", name:"Sumatera Barat", val:50021}, {id:"ID-RI", name:"Riau", val:30246},
+  {id:"ID-JA", name:"Jambi", val:6280}, {id:"ID-SS", name:"Sumatera Selatan", val:6676},
+  {id:"ID-BE", name:"Bengkulu", val:950}, {id:"ID-LA", name:"Lampung", val:7513},
+  {id:"ID-BB", name:"Kep. Bangka Belitung", val:6961}, {id:"ID-KR", name:"Kep. Riau", val:824962},
+  {id:"ID-JK", name:"DKI Jakarta", val:1287284}, {id:"ID-JB", name:"Jawa Barat", val:342442},
+  {id:"ID-JT", name:"Jawa Tengah", val:111054}, {id:"ID-YO", name:"DI Yogyakarta", val:238643},
+  {id:"ID-JI", name:"Jawa Timur", val:482687}, {id:"ID-BT", name:"Banten", val:291429},
+  {id:"ID-BA", name:"Bali", val:8976149}, {id:"ID-NB", name:"Nusa Tenggara Barat", val:722906},
+  {id:"ID-NT", name:"Nusa Tenggara Timur", val:291105}, {id:"ID-KB", name:"Kalimantan Barat", val:37856},
+  {id:"ID-KT", name:"Kalimantan Tengah", val:7622}, {id:"ID-KS", name:"Kalimantan Selatan", val:11183},
+  {id:"ID-KI", name:"Kalimantan Timur", val:21529}, {id:"ID-KU", name:"Kalimantan Utara", val:2327},
+  {id:"ID-SA", name:"Sulawesi Utara", val:58615}, {id:"ID-ST", name:"Sulawesi Tengah", val:6839},
+  {id:"ID-SN", name:"Sulawesi Selatan", val:41360}, {id:"ID-SG", name:"Sulawesi Tenggara", val:3499},
+  {id:"ID-GO", name:"Gorontalo", val:2678}, {id:"ID-SR", name:"Sulawesi Barat", val:243},
+  {id:"ID-MA", name:"Maluku", val:11167}, {id:"ID-MU", name:"Maluku Utara", val:2568},
+  {id:"ID-PB", name:"Papua Barat", val:808}, {id:"ID-PD", name:"Papua Barat Daya", val:25023},
+  {id:"ID-PA", name:"Papua", val:2214}, {id:"ID-PS", name:"Papua Selatan", val:716},
+  {id:"ID-PT", name:"Papua Tengah", val:8180}, {id:"ID-PE", name:"Papua Pegunungan", val:1265}
+];
+
+// 2. Inisialisasi AmCharts (dari main.js)
+am5.ready(function() {
+  const root = am5.Root.new("indo_map_div");
+  root.setThemes([am5themes_Animated.new(root)]);
+
+  const chart = root.container.children.push(am5map.MapChart.new(root, {
+    panX: "rotateX",
+    panY: "rotateY",
+    projection: am5map.geoMercator()
+  }));
+
+  const maxVal = Math.max(...hunianHotel2024.map(d => d.val));
+  const minVal = Math.min(...hunianHotel2024.map(d => d.val));
+  const valMap = {};
+  hunianHotel2024.forEach(d => { valMap[d.id] = d; });
+  const fmtId = v => new Intl.NumberFormat('id-ID').format(v);
+  const isIndonesiaId = id => typeof id === 'string' && id.startsWith('ID-');
+
+  // Skala warna logaritmik
+  function getColor(val) {
+    const logMin = Math.log10(minVal);
+    const logMax = Math.log10(maxVal);
+    const t = (Math.log10(val) - logMin) / (logMax - logMin);
+    const r = Math.round(229 - t * 223);
+    const g = Math.round(245 - t * 165);
+    const b = Math.round(243 - t * 171);
+    return am5.color(`rgb(${r},${g},${b})`);
+  }
+
+  const polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+    geoJSON: am5geodata_indonesiaLow,
+    valueField: "value"
+  }));
+
+  polygonSeries.mapPolygons.template.setAll({
+    interactive: true,
+    strokeWidth: 0.8,
+    stroke: am5.color(0x0d6b60), // Warna border provinsi
+    tooltipText: "{name}\n{valueText}"
+  });
+
+  polygonSeries.mapPolygons.template.adapters.add('fill', (fill, target) => {
+    const id = target.dataItem?.get('id');
+    if (!isIndonesiaId(id)) return am5.color(0xe5f5f3); // Warna area luar (negara lain)
+    const d = valMap[id];
+    return d ? getColor(d.val) : am5.color(0xd9eeeb); // Warna default jika data kosong
+  });
+
+  polygonSeries.mapPolygons.template.adapters.add('tooltipText', (text, target) => {
+    const id = target.dataItem?.get('id');
+    if (!isIndonesiaId(id)) return '';
+    const d = valMap[id];
+    return d ? `${d.name}\n${fmtId(d.val)} hunian hotel 2024` : '{name}\nData tidak tersedia';
+  });
+
+  polygonSeries.mapPolygons.template.states.create('hover', {
+    fill: am5.color(0xe8c96a), // Warna kuning saat di-hover
+    strokeWidth: 1.5,
+    stroke: am5.color(0xffffff)
+  });
+
+  polygonSeries.data.setAll(
+    hunianHotel2024.map(d => ({
+      id: d.id,
+      value: d.val,
+      valueText: `${fmtId(d.val)} hunian`
+    }))
+  );
+
+  chart.appear(1000, 100);
+});
+</script>
+</body>
+</html>
