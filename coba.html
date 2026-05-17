@@ -496,8 +496,8 @@
             
             <div id="indo_map_div" style="width: 100%; height: 520px; z-index: 10;"></div>
             
-            <div class="map-callout visible absolute top-[8%] left-[22%] md:left-[28%] max-w-[200px] bg-white p-3 rounded-xl custom-border text-xs italic shadow-lg z-20 pointer-events-none" data-for="kepri">
-                Kepri menjadi provinsi dengan tingkat hunian kamar tertinggi kedua karena dominasi wisata bahari dan kunjungan dari Singapura-Malaysia.
+            <div class="map-callout visible absolute top-[8%] left-[22%] md:left-[28%] max-w-[200px] bg-white p-3 rounded-xl custom-border text-xs italic shadow-lg z-20 pointer-events-none" data-for="bali">
+                Bali menjadi provinsi dengan tingkat hunian kamar tertinggi karena dominasi wisata dan kunjungan dari mancanegara.
             </div>
             <div class="map-callout absolute bottom-[12%] right-[18%] md:right-[22%] max-w-[200px] bg-white p-3 rounded-xl custom-border text-xs italic shadow-lg z-20 pointer-events-none" data-for="bali">
                 Bali menjadi provinsi dengan tingkat hunian kamar tertinggi karena konsentrasi resor internasional dan event wisata sepanjang tahun.
@@ -1248,25 +1248,25 @@
 <script>
 // 1. Data Hunian Hotel 2024 (dari data.js)
 const hunianHotel2024 = [
-  {id:"ID-AC", name:"Aceh", val:21550}, {id:"ID-SU", name:"Sumatera Utara", val:171023},
-  {id:"ID-SB", name:"Sumatera Barat", val:50021}, {id:"ID-RI", name:"Riau", val:30246},
-  {id:"ID-JA", name:"Jambi", val:6280}, {id:"ID-SS", name:"Sumatera Selatan", val:6676},
-  {id:"ID-BE", name:"Bengkulu", val:950}, {id:"ID-LA", name:"Lampung", val:7513},
-  {id:"ID-BB", name:"Kep. Bangka Belitung", val:6961}, {id:"ID-KR", name:"Kep. Riau", val:824962},
-  {id:"ID-JK", name:"DKI Jakarta", val:1287284}, {id:"ID-JB", name:"Jawa Barat", val:342442},
-  {id:"ID-JT", name:"Jawa Tengah", val:111054}, {id:"ID-YO", name:"DI Yogyakarta", val:238643},
-  {id:"ID-JI", name:"Jawa Timur", val:482687}, {id:"ID-BT", name:"Banten", val:291429},
-  {id:"ID-BA", name:"Bali", val:8976149}, {id:"ID-NB", name:"Nusa Tenggara Barat", val:722906},
-  {id:"ID-NT", name:"Nusa Tenggara Timur", val:291105}, {id:"ID-KB", name:"Kalimantan Barat", val:37856},
-  {id:"ID-KT", name:"Kalimantan Tengah", val:7622}, {id:"ID-KS", name:"Kalimantan Selatan", val:11183},
-  {id:"ID-KI", name:"Kalimantan Timur", val:21529}, {id:"ID-KU", name:"Kalimantan Utara", val:2327},
-  {id:"ID-SA", name:"Sulawesi Utara", val:58615}, {id:"ID-ST", name:"Sulawesi Tengah", val:6839},
-  {id:"ID-SN", name:"Sulawesi Selatan", val:41360}, {id:"ID-SG", name:"Sulawesi Tenggara", val:3499},
-  {id:"ID-GO", name:"Gorontalo", val:2678}, {id:"ID-SR", name:"Sulawesi Barat", val:243},
-  {id:"ID-MA", name:"Maluku", val:11167}, {id:"ID-MU", name:"Maluku Utara", val:2568},
-  {id:"ID-PB", name:"Papua Barat", val:808}, {id:"ID-PD", name:"Papua Barat Daya", val:25023},
-  {id:"ID-PA", name:"Papua", val:2214}, {id:"ID-PS", name:"Papua Selatan", val:716},
-  {id:"ID-PT", name:"Papua Tengah", val:8180}, {id:"ID-PE", name:"Papua Pegunungan", val:1265}
+  {id:"ID-AC", name:"Aceh", val:21600}, {id:"ID-SU", name:"Sumatera Utara", val:140019},
+  {id:"ID-SB", name:"Sumatera Barat", val:42624}, {id:"ID-RI", name:"Riau", val:29619},
+  {id:"ID-JA", name:"Jambi", val:4550}, {id:"ID-SS", name:"Sumatera Selatan", val:6575},
+  {id:"ID-BE", name:"Bengkulu", val:676}, {id:"ID-LA", name:"Lampung", val:5148},
+  {id:"ID-BB", name:"Kep. Bangka Belitung", val:6637}, {id:"ID-KR", name:"Kep. Riau", val:753730},
+  {id:"ID-JK", name:"DKI Jakarta", val:1279877}, {id:"ID-JB", name:"Jawa Barat", val:334028},
+  {id:"ID-JT", name:"Jawa Tengah", val:99588}, {id:"ID-YO", name:"DI Yogyakarta", val:184913},
+  {id:"ID-JI", name:"Jawa Timur", val:426453}, {id:"ID-BT", name:"Banten", val:290858},
+  {id:"ID-BA", name:"Bali", val:5690212}, {id:"ID-NB", name:"Nusa Tenggara Barat", val:349919},
+  {id:"ID-NT", name:"Nusa Tenggara Timur", val:147228}, {id:"ID-KB", name:"Kalimantan Barat", val:33066},
+  {id:"ID-KT", name:"Kalimantan Tengah", val:6992}, {id:"ID-KS", name:"Kalimantan Selatan", val:11093},
+  {id:"ID-KI", name:"Kalimantan Timur", val:19212}, {id:"ID-KU", name:"Kalimantan Utara", val:1432},
+  {id:"ID-SA", name:"Sulawesi Utara", val:52577}, {id:"ID-ST", name:"Sulawesi Tengah", val:3361},
+  {id:"ID-SN", name:"Sulawesi Selatan", val:31602}, {id:"ID-SG", name:"Sulawesi Tenggara", val:2678},
+  {id:"ID-GO", name:"Gorontalo", val:1911}, {id:"ID-SR", name:"Sulawesi Barat", val:185},
+  {id:"ID-MA", name:"Maluku", val:9838}, {id:"ID-MU", name:"Maluku Utara", val:1235},
+  {id:"ID-PB", name:"Papua Barat", val:666}, {id:"ID-PD", name:"Papua Barat Daya", val:24383},
+  {id:"ID-PA", name:"Papua", val:2047}, {id:"ID-PS", name:"Papua Selatan", val:654},
+  {id:"ID-PT", name:"Papua Tengah", val:8066}, {id:"ID-PE", name:"Papua Pegunungan", val:1166}
 ];
 
 // 2. Inisialisasi AmCharts (dari main.js)
